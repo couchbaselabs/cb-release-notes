@@ -1,4 +1,4 @@
-=== Bug Fixes for release {{ settings.release_number }}
+=== Bug Fixes for release {{ user_settings.fields.release_number }}
 
 {% for issue in issues | selectattr('fields.issuetype.name', 'equalto', 'Bug') %}
   {# Why do we use `++` in the URL text? Well, devs occasionally use brackets in the field summary, which
@@ -6,7 +6,7 @@
   {{ settings.repo.url }}/browse/{{ issue.key }}[{{ issue.key }}] -- {{ settings.repo.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
 {% endfor %}
 
-=== Improvements for release {{ settings.release_number }}
+=== Improvements for release {{ user_settings.fields.release_number }}
 
 {% for issue in issues %}
   {% if issue.fields.issuetype.name == 'Improvement' %}
