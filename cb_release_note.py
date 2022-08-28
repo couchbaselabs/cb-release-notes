@@ -82,7 +82,7 @@ def get_user_options(config):
             user_settings.fields[field_name] = choice
 
     # Timestamp the filename
-    file_stamp = datetime.datetime.now().strftime('%Y%m%d%')
+    file_stamp = datetime.datetime.now().strftime('%Y%m%d')
     user_settings.output_file = inquirer.filepath(
         message="Now, what's the name of the asciidoc file you wish to create?",
         default=f'{release_setting}-{file_stamp}-release-note.adoc',
