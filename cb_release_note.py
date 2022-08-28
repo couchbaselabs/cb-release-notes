@@ -118,21 +118,21 @@ def retrieve_issues(user_settings):
     return issues
 
 
-def filter_by_component(issues, components):
-    filtered_list = []
-    for issue in issues:
-        for issue_component in issue.fields.components:
-            if issue_component.name in components:
-                filtered_list.append(issue)
-    return filtered_list
+def filter_by_component(issues, selected_components):
+    return [issue for issue in issues if
+            [component for component in issue.fields.components if component.name in selected_components]]
 
 
-def filter_by_issue_type(issues, issue_types):
-    filtered_list = []
-    for issue in issues:
-        for issue_type in issue.fields.issuetype:
-            if issue_type in issue_types:
-                filtered_list.append(issue)
+def filter_by_status(issues, selected_statuses):
+    return [issue for issue in issues if issue.fields.status.name in selected_statuses]
+
+
+def filter_by_resolution(issues, selected_resolutions):
+    return [issue for issue in issues if issue.fields.resolution.name in selected_resolutions]
+
+
+def filter_by_issue_type(issues, selected_issue_types):
+    return [issue for issue in issues if issue.fields.issuetype in selected_issue_types]
 
 
 def replace_dots(string_to_fix, char_to_replace):
@@ -144,6 +144,8 @@ def render_release_notes(user_settings, issue_list):
 
     environment.filters['filter_by_component'] = filter_by_component
     environment.filters['filter_by_issue_type'] = filter_by_issue_type
+    environment.filters['filter_by_status'] = filter_by_status
+    environment.filters['filter_by_resolution'] = filter_by_resolution
     environment.filters['replace_dots'] = replace_dots
 
     template = environment.get_template(user_settings.settings['template'])

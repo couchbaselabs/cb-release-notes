@@ -143,10 +143,14 @@ The program is a Python script packaged as an executable (hence the size!)
 Run it from the shell:
 [source, shell]
 ----
-cb_release_note
+./cb_release_note
 ----
 
 And follow the instructions.
+
+Now copy the generated file to the `partials` directory of the module under release.
+Then `include::` the file at the top of the existing release note.
+
 
 
 

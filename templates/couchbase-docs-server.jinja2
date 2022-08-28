@@ -4,9 +4,14 @@
 Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
 This maintenance release contains fixes to issues.
 
+{% macro table_line(user_settings, issue) -%}
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+{%- endmacro %}
+
 == Fixed Issues
 
-{%  set data_issues = issues | filter_by_component(['memcached']) %}
+{% set data_issues = issues | filter_by_component(['memcached']) %}
 
 {% if data_issues | length > 0 %}
 === Data Service
@@ -16,15 +21,13 @@ This maintenance release contains fixes to issues.
 |Issue | Description
 
 {% for issue in data_issues  %}
-
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+{{ table_line(user_settings, issue) }}
 
 {% endfor %}
 |===
 {% endif %}
 
-{%  set xdcr_issues = issues | filter_by_component(['XDCR']) %}
+{% set xdcr_issues = issues | filter_by_component(['XDCR']) %}
 
 {% if xdcr_issues | length > 0 %}
 === XDCR
@@ -34,15 +37,13 @@ This maintenance release contains fixes to issues.
 |Issue | Description
 
 {% for issue in xdcr_issues  %}
-
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+{{ table_line(user_settings, issue) }}
 
 {% endfor %}
 |===
 {% endif %}
 
-{%  set query_issues = issues | filter_by_component(['query']) %}
+{% set query_issues = issues | filter_by_component(['query']) %}
 
 {% if query_issues | length > 0 %}
 === Query Service
@@ -52,33 +53,29 @@ This maintenance release contains fixes to issues.
 |Issue | Description
 
 {% for issue in query_issues  %}
-
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+{{ table_line(user_settings, issue) }}
 
 {% endfor %}
 |===
 {% endif %}
 
-{%  set eventing_issues = issues | filter_by_component(['eventing']) %}
+{% set eventing_issues = issues | filter_by_component(['eventing']) %}
 
 {% if eventing_issues | length > 0 %}
-=== Query Service
+=== Eventing Service
 
 [#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-eventingservice, cols="25,66"]
 |===
 |Issue | Description
 
 {% for issue in eventing_issues  %}
-
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+{{ table_line(user_settings, issue) }}
 
 {% endfor %}
 |===
 {% endif %}
 
-{%  set backup_issues = issues | filter_by_component(['tools']) %}
+{% set backup_issues = issues | filter_by_component(['tools']) %}
 
 {% if backup_issues | length > 0 %}
 === Backup Service
@@ -88,9 +85,7 @@ This maintenance release contains fixes to issues.
 |Issue | Description
 
 {% for issue in backup_issues  %}
-
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+{{ table_line(user_settings, issue) }}
 
 {% endfor %}
 |===
