@@ -1,0 +1,59 @@
+# Configuration file for the release notes builder
+version: 1.0
+
+password_file: ./.passwords.yaml
+templates_directory: ./templates
+
+release-settings:
+
+  couchbase-mobile:
+    url: https://issues.couchbase.com
+    jql: project = CBL AND issuetype in ({{issue_types}}) 
+      AND Status = Closed
+      AND Resolution = Fixed
+      AND Component in ({{components}})
+      AND Level = 'Public'
+      AND fixVersion = {{release_number}}
+    template: couchbase-mobile.jinja2
+    fields:
+      components:
+         type: choice
+         message: Please choose your components
+         choices:
+          - .NET
+          - C
+          - iOS
+          - Java
+          - Java-Android
+          - Kotlin
+          - Kotlin-Android
+          - LiteCore
+      issue_types:
+        type: choice
+        message: Select issue type
+        choices:
+          - Bug
+          - Improvement
+          - "New Feature"
+      release_number:
+        type: text
+        message: Enter the release number
+      release_date:
+        type: text
+        message: Enter the release date (Month Year)
+
+  docs-server:
+    url: https://issues.couchbase.com
+    jql: project = MB AND issuetype = Bug 
+         AND status = Closed 
+         AND resolution = Fixed 
+         AND fixVersion IN ({{release_number}})
+         AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
+    template: couchbase-docs-server.jinja2
+    fields:
+      release_date:
+        type: text
+        message: Enter the release date (Month Year)
+      release_number:
+        type: text
+        message: Enter the release number

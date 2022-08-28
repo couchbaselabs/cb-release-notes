@@ -1,0 +1,97 @@
+[#release-{{ user_settings.fields.release_number | replace_dots('') }}]
+== Release {{ user_settings.fields.release_number }}  ({{ user_settings.fields.release_date}})
+
+Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
+This maintenance release contains fixes to issues.
+
+== Fixed Issues
+
+{%  set data_issues = issues | filter_by_component(['memcached']) %}
+
+{% if data_issues | length > 0 %}
+=== Data Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-dataservice, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in data_issues  %}
+
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+
+{% endfor %}
+|===
+{% endif %}
+
+{%  set xdcr_issues = issues | filter_by_component(['XDCR']) %}
+
+{% if xdcr_issues | length > 0 %}
+=== XDCR
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-xdcr, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in xdcr_issues  %}
+
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+
+{% endfor %}
+|===
+{% endif %}
+
+{%  set query_issues = issues | filter_by_component(['query']) %}
+
+{% if query_issues | length > 0 %}
+=== Query Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-queryservice, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in query_issues  %}
+
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+
+{% endfor %}
+|===
+{% endif %}
+
+{%  set eventing_issues = issues | filter_by_component(['eventing']) %}
+
+{% if eventing_issues | length > 0 %}
+=== Query Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-eventingservice, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in eventing_issues  %}
+
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+
+{% endfor %}
+|===
+{% endif %}
+
+{%  set backup_issues = issues | filter_by_component(['tools']) %}
+
+{% if backup_issues | length > 0 %}
+=== Backup Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-backupservice, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in backup_issues  %}
+
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
+| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+
+{% endfor %}
+|===
+{% endif %}

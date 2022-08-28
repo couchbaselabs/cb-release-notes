@@ -1,0 +1,11 @@
+/tests/.pytest_cache/
+.passwords.yaml
+**/couchbase*.adoc
+**/docs-server*.adoc
+/build/
+/dist/
+/package/
+/tests/
+/cb_release_note.spec
+package.zip
+
