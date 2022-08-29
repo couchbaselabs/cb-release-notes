@@ -14,7 +14,6 @@ release-settings:
       AND Component in ({{components}})
       AND Level = 'Public'
       AND fixVersion = {{release_number}}
-    template: couchbase-mobile.jinja2
     fields:
       components:
          type: choice
@@ -41,6 +40,7 @@ release-settings:
       release_date:
         type: text
         message: Enter the release date (Month Year)
+    template: couchbase-mobile.jinja2
 
   docs-server:
     url: https://issues.couchbase.com
@@ -49,7 +49,6 @@ release-settings:
          AND resolution = Fixed 
          AND fixVersion IN ({{release_number}})
          AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
-    template: couchbase-docs-server.jinja2
     fields:
       release_date:
         type: text
@@ -57,3 +56,4 @@ release-settings:
       release_number:
         type: text
         message: Enter the release number
+    template: couchbase-docs-server.jinja2

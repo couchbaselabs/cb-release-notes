@@ -2,7 +2,8 @@
 
 == Introduction
 
-Creating release notes Jira issues is pretty dull, amIRight?
+Creating release notes from Jira issues is pretty dull, AmIRight?
+
 Each module's release note is in a different format, and you need a different Jira search to find the ones that go in the notes (and don't forget to filter out the private ones).
 
 [#cb-release-notes-image]
@@ -55,9 +56,8 @@ release-settings:
       AND Status = Closed
       AND Resolution = Fixed
       AND Component in ({{components}})
-      AND Level = 'Public'
+      AND Level = 'Public'    <.>
       AND fixVersion = {{release_number}}
-    template: couchbase-mobile.jinja2    <.>
     fields:    <.>
       components:
          type: choice
@@ -84,6 +84,8 @@ release-settings:
       release_date:
         type: text
         message: Enter the release date (Month Year)
+    template: couchbase-mobile.jinja2    <.>
+
 
   docs-server:
     url: https://issues.couchbase.com
@@ -118,11 +120,9 @@ https://atlassian.couchbase.com:
 <.> Marks the beginning of a release set. When the program runs, you will be presented with a list of release sets (see xref:cb-release-notes-image[xrefstyle=short]) to pick from.
 <.> The URL for the issue database.
 +
-IMPORTANT: The URL is used as the key for the password file. Make sure that the entries match up exactly.
+IMPORTANT: The URL is used as the key for the password file.Make sure that the entries match up exactly.
 <.> The JQL statement used to retrieve the Jiras making up the release note.
-You can use macros inside the JQL. If they are present then the program will ask you to select values for them while it's processing. The supported macros are as follows:
-<.> The template that will be used to render the release note.
-For more information on `Jinja2` templates, see the https://jinja.palletsprojects.com[Jinja Documentation]
+You can use macros variables (`+{{variable_name}}+`) inside the JQL, which will need to be filled in when the generator runs.
 <.> The 'fields' section is a list of fields that the program will ask for.
 The user will fill in the entries, and the value will be stored under the given name (`release_number` for example).
 The fields can be referenced in the `jql` statement and/or the `jinja` template.
@@ -131,11 +131,14 @@ The program currently supports three field types:
 text:: An arbitrary field of text.
 select:: A menu selection from which the user can select a single value.
 choice:: A multiple choice selection.
-
++
 .Making a multiple selection
 image::making-a-multiple-selection.png[]
+<.> A lot of Jiras are not meant for public consumption, so it's a good idea to check that the Jiras included in the release note are marked for public consumption.
+<.> The template that will be used to render the release note.
+For more information on `Jinja2` templates, see the https://jinja.palletsprojects.com[Jinja Documentation]
 
-NOTE: If you think about it, every release set should require a release number.
+NOTE: Every release set should require a release number at the very least.
 
 == Running the program
 
