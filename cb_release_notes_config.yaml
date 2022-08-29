@@ -1,10 +1,10 @@
 # Configuration file for the release notes builder
-version: 1.0
+version: "1.0"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
 
-release-settings:
+release_settings:
 
   - name: couchbase-mobile
     url: https://issues.couchbase.com

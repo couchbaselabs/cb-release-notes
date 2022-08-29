@@ -40,7 +40,7 @@ def get_user_options(config):
     user_settings.templates_directory = config['templates_directory']
 
     # Get the settings details from the configuration
-    release_sets = [item['name'] for item in config['release-settings']]
+    release_sets = [item['name'] for item in config['release_settings']]
 
     release_set = inquirer.select(
         message="Select Release item:",
@@ -50,7 +50,7 @@ def get_user_options(config):
         height=6
     ).execute()
 
-    user_settings.settings = next(setting for setting in config['release-settings'] if setting['name'] == release_set)
+    user_settings.settings = next(setting for setting in config['release_settings'] if setting['name'] == release_set)
 
     for field in [item for item in user_settings.settings['fields']]:
 
