@@ -17,7 +17,7 @@ class UserSettings:
     output_file = None
 
     def __str__(self):
-        return f'repo = {self.settings}; \
+        return f'settings = {self.settings}; \
           fields = {self.fields}  \
           output file = {self.output_file}'
 
@@ -40,20 +40,19 @@ def get_user_options(config):
     user_settings.templates_directory = config['templates_directory']
 
     # Get the settings details from the configuration
-    repo_details = list(config['release-settings'].keys())
-    release_setting = inquirer.select(
+    release_sets = [item['name'] for item in config['release-settings']]
+
+    release_set = inquirer.select(
         message="Select Release item:",
-        choices=repo_details,
-        validate=lambda repo: len(repo) > 0,
+        choices=release_sets,
+        validate=lambda setting: len(setting) > 0,
         invalid_message="You must select a setting",
         height=6
     ).execute()
 
-    user_settings.settings = config['release-settings'][release_setting]
+    user_settings.settings = next(setting for setting in config['release-settings'] if setting['name'] == release_set)
 
-    for field_name in list(user_settings.settings["fields"].keys()):
-
-        field = user_settings.settings["fields"][field_name]
+    for field in [item for item in user_settings.settings['fields']]:
 
         if field['type'] == 'text':
             text = inquirer.text(
@@ -61,7 +60,8 @@ def get_user_options(config):
                 validate=lambda entered_text: len(entered_text) > 0,
                 invalid_message="You must enter a value"
             ).execute()
-            user_settings.fields[field_name] = text
+
+            user_settings.fields[field['name']] = text
 
         elif field['type'] == 'choice':
             choices = inquirer.checkbox(
@@ -70,7 +70,8 @@ def get_user_options(config):
                 validate=lambda selected_choices: len(selected_choices) > 0,
                 invalid_message="You must select at least one setting",
             ).execute()
-            user_settings.fields[field_name] = ','.join(choices)
+
+            user_settings.fields[field['name']] = ','.join(choices)
 
         elif field['type'] == 'select':
             choice = inquirer.select(
@@ -79,13 +80,14 @@ def get_user_options(config):
                 validate=lambda selected_choice: len(selected_choice) > 0,
                 invalid_message="You must select one",
             ).execute()
-            user_settings.fields[field_name] = choice
+
+            user_settings.fields[field['name']] = choice
 
     # Timestamp the filename
     file_stamp = datetime.datetime.now().strftime('%Y%m%d')
     user_settings.output_file = inquirer.filepath(
         message="Now, what's the name of the asciidoc file you wish to create?",
-        default=f'{release_setting}-{file_stamp}-release-note.adoc',
+        default=f'{release_set}-{file_stamp}-release-note.adoc',
         validate=lambda file_name: file_name.endswith('.adoc'),
 
     ).execute()
