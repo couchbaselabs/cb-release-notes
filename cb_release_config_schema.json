@@ -40,12 +40,37 @@
         "fields": {
           "type": "array",
           "items": {"$ref": "#/$defs/fieldSettings"}
+        },
+        "template" : {
+          "type": "string"
         }
       },
-      "required": ["name", "url", "jql", "fields"]
+      "required": ["name", "url", "jql", "fields", "template"]
     },
     "fieldSettings": {
-
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["text", "select", "choice", "editor"]
+        },
+        "message": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": "string"
+        }
+      },
+      "required": ["name", "type", "message"],
+      "if" : {"properties": {"type" :  {"const": "choice"}}
+      },
+      "then" : {
+        "required": ["choices"]
+      }
     }
   }
 }
