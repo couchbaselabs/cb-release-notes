@@ -136,7 +136,11 @@ The fields can be referenced in the `jql` statement and/or the `jinja` template.
 The program currently supports three field types:
 [horizontal]
 text:: An arbitrary field of text.
-editor:: A multiline edit field.
+multiline:: The same as text, except you can enter multiple lines.
+editor:: This will open your system editor for editing large wodges of text.
++
+WARNING: This one is experimental; we recommend you don't use it in production.
+
 select:: A menu selection from which the user can select a single value.
 choice:: A multiple choice selection.
 +

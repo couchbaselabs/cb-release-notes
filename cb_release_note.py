@@ -9,6 +9,8 @@ from jira import JIRA
 from termcolor import colored
 from inspect import getmembers, isfunction
 import release_note_support
+import editor
+
 
 class UserSettings:
     password_file = None
@@ -61,18 +63,22 @@ def get_user_options(config):
                 validate=lambda entered_text: len(entered_text) > 0,
                 invalid_message="You must enter a value"
             ).execute()
-
             user_settings.fields[field['name']] = text
 
-        if field['type'] == 'editor':
+        if field['type'] == 'multiline':
             text = inquirer.text(
                 message=field['message'],
                 multiline=True,
                 validate=lambda entered_text: len(entered_text) > 0,
                 invalid_message="You must enter a value"
             ).execute()
-
             user_settings.fields[field['name']] = text
+
+        if field['type'] == 'editor':
+            prompt_text = str.encode(f'{field["message"]}')
+            text = editor.edit(contents=prompt_text)
+            user_settings.fields[field['name']] = text.decode()
+
         elif field['type'] == 'choice':
             choices = inquirer.checkbox(
                 message=field['message'],
@@ -80,7 +86,6 @@ def get_user_options(config):
                 validate=lambda selected_choices: len(selected_choices) > 0,
                 invalid_message="You must select at least one setting",
             ).execute()
-
             user_settings.fields[field['name']] = ','.join(choices)
 
         elif field['type'] == 'select':
@@ -90,7 +95,6 @@ def get_user_options(config):
                 validate=lambda selected_choice: len(selected_choice) > 0,
                 invalid_message="You must select one",
             ).execute()
-
             user_settings.fields[field['name']] = choice
 
     # Timestamp the filename

@@ -60,6 +60,10 @@ release_settings:
         type: text
         message: Enter the release date (Month Year)
 
+      - name: summary
+        type: multiline
+        message: Enter the summary
+
       - name: release_number
         type: text
         message: Enter the release number

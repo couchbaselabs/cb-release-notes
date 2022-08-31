@@ -55,7 +55,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["text", "select", "choice", "editor"]
+          "enum": ["text", "select", "choice", "editor", "multiline"]
         },
         "message": {
           "type": "string"
