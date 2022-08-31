@@ -8,8 +8,10 @@ from jinja2 import FileSystemLoader
 from jira import JIRA
 from termcolor import colored
 from inspect import getmembers, isfunction
-import release_note_support
+import release_note_filters
 import editor
+
+import release_note_functions
 
 
 class UserSettings:
@@ -137,8 +139,11 @@ def retrieve_issues(user_settings):
 def render_release_notes(user_settings, issue_list):
     environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True)
 
-    support_filters = {name: function for name, function in getmembers(release_note_support) if isfunction(function)}
+    support_filters = {name: function for name, function in getmembers(release_note_filters) if isfunction(function)}
     environment.filters.update(support_filters)
+
+    support_functions = {name: function for name, function in getmembers(release_note_functions) if isfunction(function)}
+    environment.globals.update(support_functions)
 
     template = environment.get_template(user_settings.settings['template'])
     content = template.render(user_settings=user_settings, issues=issue_list)

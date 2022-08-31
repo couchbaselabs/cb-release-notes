@@ -9,8 +9,8 @@ This maintenance release contains fixes to issues.
 {{ user_settings.fields.summary }}
 
 {% macro table_line(user_settings, issue) -%}
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}]
-| {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
+| {{ url_with_jira(user_settings.settings.url, issue.key) }}
+| {{ url_with_jira(user_settings.settings.url, issue.key, issue.fields.summary) }}
 {%- endmacro %}
 
 == Fixed Issues
