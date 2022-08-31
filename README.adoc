@@ -43,14 +43,14 @@ Release notes are created from a `release set` specified in the configuration fi
 [source, yaml]
 ----
 # Configuration file for the release notes builder
-version: 1.0   <.>
+version: "1.0"    <.>
 
 password_file: ./.passwords.yaml    <.>
 templates_directory: ./templates    <.>
 
-release-settings:
+release_settings:    <.>
 
-  couchbase-mobile:    <.>
+  - name: couchbase-mobile
     url: https://issues.couchbase.com    <.>
     jql: project = CBL AND issuetype in ({{issue_types}})    <.>
       AND Status = Closed
@@ -58,50 +58,57 @@ release-settings:
       AND Component in ({{components}})
       AND Level = 'Public'    <.>
       AND fixVersion = {{release_number}}
+
     fields:    <.>
-      components:
-         type: choice
-         message: Please choose your components
-         choices:
-          - .NET
-          - C
-          - iOS
-          - Java
-          - Java-Android
-          - Kotlin
-          - Kotlin-Android
-          - LiteCore
-      issue_types:
-        type: choice
-        message: Select issue type
-        choices:
-          - Bug
-          - Improvement
-          - "New Feature"
-      release_number:
-        type: text
-        message: Enter the release number
-      release_date:
-        type: text
-        message: Enter the release date (Month Year)
+
+    - name: components
+      type: choice
+      message: Please choose your components
+      choices:
+        - .NET
+        - C
+        - iOS
+        - Java
+        - Java-Android
+        - Kotlin
+        - Kotlin-Android
+        - LiteCore
+
+    - name: issue_types
+      type: choice
+      message: Select issue type
+      choices:
+        - Bug
+        - Improvement
+        - "New Feature"
+    - name: release_number
+      type: text
+      message: Enter the release number
+    - name: release_date
+      type: text
+      message: Enter the release date (Month Year)
+
     template: couchbase-mobile.jinja2    <.>
 
-
-  docs-server:
+  - name: docs-server
     url: https://issues.couchbase.com
     jql: project = MB AND issuetype = Bug
          AND status = Closed
          AND resolution = Fixed
          AND fixVersion IN ({{release_number}})
          AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
-    template: couchbase-docs-server.jinja2
+
     fields:
-      release_date:
+
+      - name: release_date
         type: text
         message: Enter the release date (Month Year)
-      release_number:
+
+      - name: release_number
         type: text
         message: Enter the release number
+
+    template: couchbase-docs-server.jinja2
 ----
 <.> The version of the application.
 This is just to help keep track of things.
@@ -129,6 +136,7 @@ The fields can be referenced in the `jql` statement and/or the `jinja` template.
 The program currently supports three field types:
 [horizontal]
 text:: An arbitrary field of text.
+editor:: A multiline edit field.
 select:: A menu selection from which the user can select a single value.
 choice:: A multiple choice selection.
 +
