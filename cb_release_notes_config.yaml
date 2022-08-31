@@ -1,12 +1,12 @@
 # Configuration file for the release notes builder
-version: 1.0
+version: "1.0"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
 
-release-settings:
+release_settings:
 
-  couchbase-mobile:
+  - name: couchbase-mobile
     url: https://issues.couchbase.com
     jql: project = CBL AND issuetype in ({{issue_types}}) 
       AND Status = Closed
@@ -14,46 +14,54 @@ release-settings:
       AND Component in ({{components}})
       AND Level = 'Public'
       AND fixVersion = {{release_number}}
+
     fields:
-      components:
-         type: choice
-         message: Please choose your components
-         choices:
-          - .NET
-          - C
-          - iOS
-          - Java
-          - Java-Android
-          - Kotlin
-          - Kotlin-Android
-          - LiteCore
-      issue_types:
-        type: choice
-        message: Select issue type
-        choices:
-          - Bug
-          - Improvement
-          - "New Feature"
-      release_number:
-        type: text
-        message: Enter the release number
-      release_date:
-        type: text
-        message: Enter the release date (Month Year)
+
+    - name: components
+      type: choice
+      message: Please choose your components
+      choices:
+        - .NET
+        - C
+        - iOS
+        - Java
+        - Java-Android
+        - Kotlin
+        - Kotlin-Android
+        - LiteCore
+
+    - name: issue_types
+      type: choice
+      message: Select issue type
+      choices:
+        - Bug
+        - Improvement
+        - "New Feature"
+    - name: release_number
+      type: text
+      message: Enter the release number
+    - name: release_date
+      type: text
+      message: Enter the release date (Month Year)
+
     template: couchbase-mobile.jinja2
 
-  docs-server:
+  - name: docs-server
     url: https://issues.couchbase.com
     jql: project = MB AND issuetype = Bug 
          AND status = Closed 
          AND resolution = Fixed 
          AND fixVersion IN ({{release_number}})
          AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
+
     fields:
-      release_date:
+
+      - name: release_date
         type: text
         message: Enter the release date (Month Year)
-      release_number:
+
+      - name: release_number
         type: text
         message: Enter the release number
+
     template: couchbase-docs-server.jinja2

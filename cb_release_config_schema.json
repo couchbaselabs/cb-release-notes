@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://couchbase.com/cb_release_config_schema.json",
+  "title": "ReleaseNotesConfiguration",
+  "description": "Configuration File for the Release Notes Builder",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "password_file": {
+      "type": "string"
+    },
+    "templates_directory": {
+      "type": "string"
+    },
+    "release_settings":
+    {
+      "type": "array",
+      "items": {"$ref": "#/$defs/releaseSettings"}
+    }
+  },
+  "required": ["version", "password_file", "templates_directory", "release_settings"],
+
+  "$defs": {
+    "releaseSettings": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?://"
+        },
+        "jql": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/fieldSettings"}
+        },
+        "template" : {
+          "type": "string"
+        }
+      },
+      "required": ["name", "url", "jql", "fields", "template"]
+    },
+    "fieldSettings": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["text", "select", "choice", "editor"]
+        },
+        "message": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": "string"
+        }
+      },
+      "required": ["name", "type", "message"],
+      "if" : {"properties": {"type" :  {"const": "choice"}}
+      },
+      "then" : {
+        "required": ["choices"]
+      }
+    }
+  }
+}
