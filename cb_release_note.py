@@ -7,7 +7,8 @@ from InquirerPy import inquirer
 from jinja2 import FileSystemLoader
 from jira import JIRA
 from termcolor import colored
-
+from inspect import getmembers, isfunction
+import release_note_support
 
 class UserSettings:
     password_file = None
@@ -63,6 +64,15 @@ def get_user_options(config):
 
             user_settings.fields[field['name']] = text
 
+        if field['type'] == 'editor':
+            text = inquirer.text(
+                message=field['message'],
+                multiline=True,
+                validate=lambda entered_text: len(entered_text) > 0,
+                invalid_message="You must enter a value"
+            ).execute()
+
+            user_settings.fields[field['name']] = text
         elif field['type'] == 'choice':
             choices = inquirer.checkbox(
                 message=field['message'],
@@ -120,35 +130,11 @@ def retrieve_issues(user_settings):
     return issues
 
 
-def filter_by_component(issues, selected_components):
-    return [issue for issue in issues if
-            [component for component in issue.fields.components if component.name in selected_components]]
-
-
-def filter_by_status(issues, selected_statuses):
-    return [issue for issue in issues if issue.fields.status.name in selected_statuses]
-
-
-def filter_by_resolution(issues, selected_resolutions):
-    return [issue for issue in issues if issue.fields.resolution.name in selected_resolutions]
-
-
-def filter_by_issue_type(issues, selected_issue_types):
-    return [issue for issue in issues if issue.fields.issuetype in selected_issue_types]
-
-
-def replace_dots(string_to_fix, char_to_replace):
-    return string_to_fix.replace('.', char_to_replace)
-
-
 def render_release_notes(user_settings, issue_list):
     environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True)
 
-    environment.filters['filter_by_component'] = filter_by_component
-    environment.filters['filter_by_issue_type'] = filter_by_issue_type
-    environment.filters['filter_by_status'] = filter_by_status
-    environment.filters['filter_by_resolution'] = filter_by_resolution
-    environment.filters['replace_dots'] = replace_dots
+    support_filters = {name: function for name, function in getmembers(release_note_support) if isfunction(function)}
+    environment.filters.update(support_filters)
 
     template = environment.get_template(user_settings.settings['template'])
     content = template.render(user_settings=user_settings, issues=issue_list)
