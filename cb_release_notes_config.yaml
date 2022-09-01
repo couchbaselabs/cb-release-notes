@@ -48,9 +48,6 @@ release_settings:
   - name: docs-server
     url: https://issues.couchbase.com
     jql: project = MB AND issuetype = Bug
-      AND status = Closed
-      AND resolution = Fixed
-      AND fixVersion IN ({{release_number}})
       AND component in (analytics, eventing, fts, ns_server, query, query_tools, 
       rbac, XDCR, memcached, secondary-index, installer, storage-engine, view-engine)
 

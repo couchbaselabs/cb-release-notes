@@ -133,7 +133,7 @@ def retrieve_issues(user_settings):
         search_str = search_str.replace(f'{{{{{user_variable}}}}}', user_settings.fields[user_variable])
 
     print(f'Searching with => {search_str}')
-    issues = jira.search_issues(search_str)
+    issues = jira.search_issues(search_str, maxResults=100000)
     return issues
 
 

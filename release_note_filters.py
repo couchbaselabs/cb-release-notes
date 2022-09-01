@@ -17,5 +17,10 @@ def filter_by_issue_type(issues, selected_issue_types):
     return [issue for issue in issues if issue.fields.issuetype in selected_issue_types]
 
 
+def filter_by_fix_version(issues, selected_fix_versions):
+    return [issue for issue in issues if
+            [fix_version for fix_version in issue.fields.fixVersions if fix_version.name in selected_fix_versions]]
+
+
 def replace_dots(string_to_fix, char_to_replace):
     return string_to_fix.replace('.', char_to_replace)

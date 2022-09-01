@@ -1,5 +1,10 @@
+{% set known_issues_exist = False %}
+
 {% macro generate_issue_table(issues, title, components, suffix) %}
-{% set filtered_issues = issues | filter_by_component(components) %}
+{% set filtered_issues = issues | filter_by_component(components)
+| filter_by_fix_version([user_settings.fields.release_number])
+| filter_by_status(['Closed'])
+| filter_by_resolution(['Fixed'])%}
 
 {% if filtered_issues | length > 0 %}
 === {{ title }}
@@ -14,6 +19,30 @@
 
 {% endfor %}
 |===
+{% endif %}
+{% endmacro %}
+
+
+{% macro generate_known_issue_table(issues, title, components, suffix) %}
+{% set filtered_issues = issues | filter_by_component(components)
+| filter_by_fix_version([user_settings.fields.release_number])
+| filter_by_status(['Open'])
+| filter_by_resolution(['Unresolved'])%}
+
+{%- if filtered_issues | length > 0 -%}
+=== {{ title }}
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in filtered_issues  %}
+| {{ url_with_jira(user_settings.settings.url, issue.key) }}
+| {{ issue.fields.summary }}
+
+{%- endfor -%}
+|===
+{% set known_issues_exist = True %}
 {% endif %}
 {% endmacro %}
 
@@ -37,3 +66,25 @@ This maintenance release contains fixes to issues.
 {{ generate_issue_table(issues, 'Analytics Servicee', ['analytics'], 'analytics-service') }}
 {{ generate_issue_table(issues, 'Index Service', ['secondary-index'], 'index-service') }}
 {{ generate_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
+
+== Known Issues
+
+This release contains the following known issues.
+
+{{ generate_known_issue_table(issues, 'Installer', ['installer'], 'installation') }}
+{{ generate_known_issue_table(issues, 'Cluster Manager', ['ns_server'], 'cluster-manager') }}
+{{ generate_known_issue_table(issues, 'Storage', ['storage-engine'], 'storage') }}
+{{ generate_known_issue_table(issues, 'Data Service', ['memcached'], 'data-service') }}
+{{ generate_known_issue_table(issues, 'Views', ['view-engine'], 'views') }}
+{{ generate_known_issue_table(issues, 'XDCR', ['XDCR'], 'xdcr') }}
+{{ generate_known_issue_table(issues, 'Query Service', ['query'], 'query-service') }}
+{{ generate_known_issue_table(issues, 'Eventing Service', ['eventing'], 'eventing-service') }}
+{{ generate_known_issue_table(issues, 'Backup Service', ['tools'], 'backup-service') }}
+{{ generate_known_issue_table(issues, 'Analytics Servicee', ['analytics'], 'analytics-service') }}
+{{ generate_known_issue_table(issues, 'Index Service', ['secondary-index'], 'index-service') }}
+{{ generate_known_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
+
+{% if known_issues_exist ==false %}
+*None*
+{% endif %}
+
