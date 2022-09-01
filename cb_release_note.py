@@ -57,47 +57,48 @@ def get_user_options(config):
 
     user_settings.settings = next(setting for setting in config['release_settings'] if setting['name'] == release_set)
 
-    for field in [item for item in user_settings.settings['fields']]:
+    if 'fields' in user_settings.settings:
+        for field in [item for item in user_settings.settings['fields']]:
 
-        if field['type'] == 'text':
-            text = inquirer.text(
-                message=field['message'],
-                validate=lambda entered_text: len(entered_text) > 0,
-                invalid_message="You must enter a value"
-            ).execute()
-            user_settings.fields[field['name']] = text
+            if field['type'] == 'text':
+                text = inquirer.text(
+                    message=field['message'],
+                    validate=lambda entered_text: len(entered_text) > 0,
+                    invalid_message="You must enter a value"
+                ).execute()
+                user_settings.fields[field['name']] = text
 
-        if field['type'] == 'multiline':
-            text = inquirer.text(
-                message=field['message'],
-                multiline=True,
-                validate=lambda entered_text: len(entered_text) > 0,
-                invalid_message="You must enter a value"
-            ).execute()
-            user_settings.fields[field['name']] = text
+            if field['type'] == 'multiline':
+                text = inquirer.text(
+                    message=field['message'],
+                    multiline=True,
+                    validate=lambda entered_text: len(entered_text) > 0,
+                    invalid_message="You must enter a value"
+                ).execute()
+                user_settings.fields[field['name']] = text
 
-        if field['type'] == 'editor':
-            prompt_text = str.encode(f'{field["message"]}')
-            text = editor.edit(contents=prompt_text)
-            user_settings.fields[field['name']] = text.decode()
+            if field['type'] == 'editor':
+                prompt_text = str.encode(f'{field["message"]}')
+                text = editor.edit(contents=prompt_text)
+                user_settings.fields[field['name']] = text.decode()
 
-        elif field['type'] == 'choice':
-            choices = inquirer.checkbox(
-                message=field['message'],
-                choices=field['choices'],
-                validate=lambda selected_choices: len(selected_choices) > 0,
-                invalid_message="You must select at least one setting",
-            ).execute()
-            user_settings.fields[field['name']] = ','.join(choices)
+            elif field['type'] == 'choice':
+                choices = inquirer.checkbox(
+                    message=field['message'],
+                    choices=field['choices'],
+                    validate=lambda selected_choices: len(selected_choices) > 0,
+                    invalid_message="You must select at least one setting",
+                ).execute()
+                user_settings.fields[field['name']] = ','.join(choices)
 
-        elif field['type'] == 'select':
-            choice = inquirer.select(
-                message=field['message'],
-                choices=field['choices'],
-                validate=lambda selected_choice: len(selected_choice) > 0,
-                invalid_message="You must select one",
-            ).execute()
-            user_settings.fields[field['name']] = choice
+            elif field['type'] == 'select':
+                choice = inquirer.select(
+                    message=field['message'],
+                    choices=field['choices'],
+                    validate=lambda selected_choice: len(selected_choice) > 0,
+                    invalid_message="You must select one",
+                ).execute()
+                user_settings.fields[field['name']] = choice
 
     # Timestamp the filename
     file_stamp = datetime.datetime.now().strftime('%Y%m%d')

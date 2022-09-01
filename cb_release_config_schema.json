@@ -45,7 +45,7 @@
           "type": "string"
         }
       },
-      "required": ["name", "url", "jql", "fields", "template"]
+      "required": ["name", "url", "jql", "template"]
     },
     "fieldSettings": {
       "type": "object",
