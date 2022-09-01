@@ -4,201 +4,36 @@
 Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
 This maintenance release contains fixes to issues.
 
-{% macro table_line(user_settings, issue) -%}
+{% macro generate_issue_table(issues, title, components, suffix) %}
+{% set filtered_issues = issues | filter_by_component(components) %}
+
+{% if filtered_issues | length > 0 %}
+=== {{ title }}
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in filtered_issues  %}
 | {{ url_with_jira(user_settings.settings.url, issue.key) }}
 | {{ issue.fields.summary }}
-{%- endmacro %}
+
+{% endfor %}
+|===
+{% endif %}
+{% endmacro %}
 
 == Fixed Issues
 
-{% set installation_issues = issues | filter_by_component(['installer']) %}
-
-{% if installation_issues | length > 0 %}
-=== Installer
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-installation, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in installation_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set cluster_manager_issues = issues | filter_by_component(['ns_server']) %}
-
-{% if cluster_manager_issues | length > 0 %}
-=== Cluster Manager
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-cluster-manager, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in cluster_manager_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set storage_issues = issues | filter_by_component(['storage-engine']) %}
-
-{% if storage_issues | length > 0 %}
-=== Storage
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-storage, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in storage_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set data_issues = issues | filter_by_component(['memcached']) %}
-
-{% if data_issues | length > 0 %}
-=== Data Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-data-service, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in data_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set view_engine_issues = issues | filter_by_component(['view-engine']) %}
-
-{% if view_engine_issues | length > 0 %}
-=== Views
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-views, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in view_engine_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set xdcr_issues = issues | filter_by_component(['XDCR']) %}
-
-{% if xdcr_issues | length > 0 %}
-=== XDCR
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-xdcr, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in xdcr_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set query_issues = issues | filter_by_component(['query']) %}
-
-{% if query_issues | length > 0 %}
-=== Query Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-query-service, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in query_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set eventing_issues = issues | filter_by_component(['eventing']) %}
-
-{% if eventing_issues | length > 0 %}
-=== Eventing Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-eventing-service, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in eventing_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set backup_issues = issues | filter_by_component(['tools']) %}
-
-{% if backup_issues | length > 0 %}
-=== Backup Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-backupservice, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in backup_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set analytics_issues = issues | filter_by_component(['analytics']) %}
-
-{% if analytics_issues | length > 0 %}
-=== Analytics Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-analytics-service, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in analytics_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set index_issues = issues | filter_by_component(['secondary-index']) %}
-
-{% if index_issues | length > 0 %}
-=== Index Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-index-service, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in index_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
-
-{% set search_issues = issues | filter_by_component(['fts']) %}
-
-{% if search_issues | length > 0 %}
-=== Search Service
-
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-search-service, cols="25,66"]
-|===
-|Issue | Description
-
-{% for issue in search_issues  %}
-{{ table_line(user_settings, issue) }}
-
-{% endfor %}
-|===
-{% endif %}
+{{ generate_issue_table(issues, 'Installer', ['installer'], 'installation') }}
+{{ generate_issue_table(issues, 'Cluster Manager', ['ns_server'], 'cluster-manager') }}
+{{ generate_issue_table(issues, 'Storage', ['storage-engine'], 'storage') }}
+{{ generate_issue_table(issues, 'Data Service', ['memcached'], 'data-service') }}
+{{ generate_issue_table(issues, 'Views', ['view-engine'], 'views') }}
+{{ generate_issue_table(issues, 'XDCR', ['XDCR'], 'xdcr') }}
+{{ generate_issue_table(issues, 'Query Service', ['query'], 'query-service') }}
+{{ generate_issue_table(issues, 'Eventing Service', ['eventing'], 'eventing-service') }}
+{{ generate_issue_table(issues, 'Backup Service', ['tools'], 'backup-service') }}
+{{ generate_issue_table(issues, 'Analytics Servicee', ['analytics'], 'analytics-service') }}
+{{ generate_issue_table(issues, 'Index Service', ['secondary-index'], 'index-service') }}
+{{ generate_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
