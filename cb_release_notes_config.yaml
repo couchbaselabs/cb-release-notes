@@ -8,7 +8,7 @@ release_settings:
 
   - name: couchbase-mobile
     url: https://issues.couchbase.com
-    jql: project = CBL AND issuetype in ({{issue_types}}) 
+    jql: project = CBL AND issuetype in ({{issue_types}})
       AND Status = Closed
       AND Resolution = Fixed
       AND Component in ({{components}})
@@ -16,53 +16,48 @@ release_settings:
       AND fixVersion = {{release_number}}
 
     fields:
+      - name: components
+        type: choice
+        message: Please choose your components
+        choices:
+          - .NET
+          - C
+          - iOS
+          - Java
+          - Java-Android
+          - Kotlin
+          - Kotlin-Android
+          - LiteCore
 
-    - name: components
-      type: choice
-      message: Please choose your components
-      choices:
-        - .NET
-        - C
-        - iOS
-        - Java
-        - Java-Android
-        - Kotlin
-        - Kotlin-Android
-        - LiteCore
-
-    - name: issue_types
-      type: choice
-      message: Select issue type
-      choices:
-        - Bug
-        - Improvement
-        - "New Feature"
-    - name: release_number
-      type: text
-      message: Enter the release number
-    - name: release_date
-      type: text
-      message: Enter the release date (Month Year)
+      - name: issue_types
+        type: choice
+        message: Select issue type
+        choices:
+          - Bug
+          - Improvement
+          - "New Feature"
+      - name: release_number
+        type: text
+        message: Enter the release number
+      - name: release_date
+        type: text
+        message: Enter the release date (Month Year)
 
     template: couchbase-mobile.jinja2
 
   - name: docs-server
     url: https://issues.couchbase.com
-    jql: project = MB AND issuetype = Bug 
-         AND status = Closed 
-         AND resolution = Fixed 
-         AND fixVersion IN ({{release_number}})
-         AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
+    jql: project = MB AND issuetype = Bug
+      AND status = Closed
+      AND resolution = Fixed
+      AND fixVersion IN ({{release_number}})
+      AND component in (analytics, eventing, fts, ns_server, query, query_tools, 
+      rbac, XDCR, memcached, secondary-index, installer, storage-engine, view-engine)
 
     fields:
-
       - name: release_date
         type: text
         message: Enter the release date (Month Year)
-
-      - name: summary
-        type: multiline
-        message: Enter the summary
 
       - name: release_number
         type: text

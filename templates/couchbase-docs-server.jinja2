@@ -4,27 +4,87 @@
 Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
 This maintenance release contains fixes to issues.
 
-== Summary
-
-{{ user_settings.fields.summary }}
-
 {% macro table_line(user_settings, issue) -%}
 | {{ url_with_jira(user_settings.settings.url, issue.key) }}
-| {{ url_with_jira(user_settings.settings.url, issue.key, issue.fields.summary) }}
+| {{ issue.fields.summary }}
 {%- endmacro %}
 
 == Fixed Issues
+
+{% set installation_issues = issues | filter_by_component(['installer']) %}
+
+{% if installation_issues | length > 0 %}
+=== Installer
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-installation, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in installation_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
+
+{% set cluster_manager_issues = issues | filter_by_component(['ns_server']) %}
+
+{% if cluster_manager_issues | length > 0 %}
+=== Cluster Manager
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-cluster-manager, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in cluster_manager_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
+
+{% set storage_issues = issues | filter_by_component(['storage-engine']) %}
+
+{% if storage_issues | length > 0 %}
+=== Storage
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-storage, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in storage_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
 
 {% set data_issues = issues | filter_by_component(['memcached']) %}
 
 {% if data_issues | length > 0 %}
 === Data Service
 
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-dataservice, cols="25,66"]
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-data-service, cols="25,66"]
 |===
 |Issue | Description
 
 {% for issue in data_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
+
+{% set view_engine_issues = issues | filter_by_component(['view-engine']) %}
+
+{% if view_engine_issues | length > 0 %}
+=== Views
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-views, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in view_engine_issues  %}
 {{ table_line(user_settings, issue) }}
 
 {% endfor %}
@@ -52,7 +112,7 @@ This maintenance release contains fixes to issues.
 {% if query_issues | length > 0 %}
 === Query Service
 
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-queryservice, cols="25,66"]
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-query-service, cols="25,66"]
 |===
 |Issue | Description
 
@@ -68,7 +128,7 @@ This maintenance release contains fixes to issues.
 {% if eventing_issues | length > 0 %}
 === Eventing Service
 
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-eventingservice, cols="25,66"]
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-eventing-service, cols="25,66"]
 |===
 |Issue | Description
 
@@ -89,6 +149,54 @@ This maintenance release contains fixes to issues.
 |Issue | Description
 
 {% for issue in backup_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
+
+{% set analytics_issues = issues | filter_by_component(['analytics']) %}
+
+{% if analytics_issues | length > 0 %}
+=== Analytics Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-analytics-service, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in analytics_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
+
+{% set index_issues = issues | filter_by_component(['secondary-index']) %}
+
+{% if index_issues | length > 0 %}
+=== Index Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-index-service, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in index_issues  %}
+{{ table_line(user_settings, issue) }}
+
+{% endfor %}
+|===
+{% endif %}
+
+{% set search_issues = issues | filter_by_component(['fts']) %}
+
+{% if search_issues | length > 0 %}
+=== Search Service
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-search-service, cols="25,66"]
+|===
+|Issue | Description
+
+{% for issue in search_issues  %}
 {{ table_line(user_settings, issue) }}
 
 {% endfor %}
