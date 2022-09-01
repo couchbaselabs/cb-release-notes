@@ -1,9 +1,3 @@
-[#release-{{ user_settings.fields.release_number | replace_dots('') }}]
-== Release {{ user_settings.fields.release_number }}  ({{ user_settings.fields.release_date}})
-
-Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
-This maintenance release contains fixes to issues.
-
 {% macro generate_issue_table(issues, title, components, suffix) %}
 {% set filtered_issues = issues | filter_by_component(components) %}
 
@@ -22,6 +16,12 @@ This maintenance release contains fixes to issues.
 |===
 {% endif %}
 {% endmacro %}
+
+[#release-{{ user_settings.fields.release_number | replace_dots('') }}]
+== Release {{ user_settings.fields.release_number }}  ({{ user_settings.fields.release_date}})
+
+Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
+This maintenance release contains fixes to issues.
 
 == Fixed Issues
 
