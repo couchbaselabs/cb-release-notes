@@ -3,6 +3,7 @@ version: "1.0"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
+jira_batch_size: 50
 
 release_settings:
 

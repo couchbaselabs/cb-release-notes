@@ -16,10 +16,13 @@ from termcolor import colored
 import release_note_filters
 import release_note_functions
 
+DEFAULT_JIRA_BATCH_SIZE = 100
+
 
 class UserSettings:
     password_file = None
     templates_directory = None
+    jira_batch_size = DEFAULT_JIRA_BATCH_SIZE
     settings = None
     fields = {}
     output_file = None
@@ -46,6 +49,9 @@ def get_user_options(config):
 
     user_settings.password_file = config['password_file']
     user_settings.templates_directory = config['templates_directory']
+
+    if "jira_batch_size" in config:
+        user_settings.jira_batch_size = config["jira_batch_size"]
 
     # Get the settings details from the configuration
     release_sets = [item['name'] for item in config['release_settings']]
@@ -141,8 +147,8 @@ def parse_search_str(user_settings):
     return search_str
 
 
-def retrieve_issues(jira, search_str, start_at):
-    issues = jira.search_issues(search_str, startAt=start_at, maxResults=10)
+def retrieve_issues(jira, search_str, start_at, batch_size):
+    issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
     return issues
 
 
@@ -175,7 +181,7 @@ def main():
     with alive_bar(title='Retrieving jiras …', manual=True) as bar:
         while True:
             time.sleep(.005)
-            retrieved_issues = retrieve_issues(jira, search, list_position)
+            retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)
             if len(retrieved_issues) > 0:
                 issue_list.extend(retrieved_issues)
                 list_position += len(retrieved_issues)
