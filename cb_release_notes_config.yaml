@@ -36,7 +36,7 @@ release_settings:
         choices:
           - Bug
           - Improvement
-          - "New Feature"
+          - '"New Feature"'
       - name: release_number
         type: text
         message: Enter the release number
