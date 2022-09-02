@@ -1,16 +1,19 @@
 import datetime
 import os
+import time
+from inspect import getmembers, isfunction
+
+import editor
 import jinja2
 import pyfiglet
 import yaml
 from InquirerPy import inquirer
+from alive_progress import alive_bar
 from jinja2 import FileSystemLoader
 from jira import JIRA
 from termcolor import colored
-from inspect import getmembers, isfunction
-import release_note_filters
-import editor
 
+import release_note_filters
 import release_note_functions
 
 
@@ -35,7 +38,7 @@ def load_config():
 
 def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(colored(pyfiglet.figlet_format(f'CB Release Notes  {version_number}', width=100), 'green'))
+    print(colored(pyfiglet.figlet_format(f'CB Release Notes  {version_number}'), 'green'))
 
 
 def get_user_options(config):
@@ -118,7 +121,7 @@ def get_login_details(password_file, url_str):
     return login_details[url_str]
 
 
-def retrieve_issues(user_settings):
+def get_jira_client(user_settings):
     login = get_login_details(user_settings.password_file, user_settings.settings['url'])
 
     if 'token' in login:
@@ -126,14 +129,20 @@ def retrieve_issues(user_settings):
     else:
         jira = JIRA(user_settings.settings['url'], basic_auth=(login['username'], login['password']))
 
+    return jira
+
+
+def parse_search_str(user_settings):
     search_str = user_settings.settings['jql']
     # Replace variables if you find any
     for user_variable in list(user_settings.fields.keys()):
-        print(f'{user_variable} ==> {user_settings.fields[user_variable]}')
         search_str = search_str.replace(f'{{{{{user_variable}}}}}', user_settings.fields[user_variable])
 
-    print(f'Searching with => {search_str}')
-    issues = jira.search_issues(search_str, maxResults=100000)
+    return search_str
+
+
+def retrieve_issues(jira, search_str, start_at):
+    issues = jira.search_issues(search_str, startAt=start_at, maxResults=10)
     return issues
 
 
@@ -143,7 +152,8 @@ def render_release_notes(user_settings, issue_list):
     support_filters = {name: function for name, function in getmembers(release_note_filters) if isfunction(function)}
     environment.filters.update(support_filters)
 
-    support_functions = {name: function for name, function in getmembers(release_note_functions) if isfunction(function)}
+    support_functions = {name: function for name, function in getmembers(release_note_functions) if
+                         isfunction(function)}
     environment.globals.update(support_functions)
 
     template = environment.get_template(user_settings.settings['template'])
@@ -152,10 +162,30 @@ def render_release_notes(user_settings, issue_list):
         results.write(content)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+def main():
     configuration = load_config()
     show_banner(configuration['version'])
     settings = get_user_options(configuration)
-    released_issues = retrieve_issues(settings)
-    render_release_notes(settings, released_issues)
+    jira = get_jira_client(settings)
+
+    issue_list = []
+    list_position = 0
+    search = parse_search_str(settings)
+
+    with alive_bar(title='Retrieving jiras …', manual=True) as bar:
+        while True:
+            time.sleep(.005)
+            retrieved_issues = retrieve_issues(jira, search, list_position)
+            if len(retrieved_issues) > 0:
+                issue_list.extend(retrieved_issues)
+                list_position += len(retrieved_issues)
+                bar(len(issue_list)/retrieved_issues.total)
+            else:
+                break
+
+    render_release_notes(settings, issue_list)
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    main()
