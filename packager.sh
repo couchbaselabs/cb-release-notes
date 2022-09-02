@@ -1,4 +1,4 @@
-pyinstaller cb_release_note.py --onefile --collect-all pyfiglet
+pyinstaller cb_release_note.py --onefile --collect-all pyfiglet --collect-all alive_progress --collect-all grapheme
 mkdir ./package
 cp ./dist/cb_release_note ./package
 cp ./cb_release_notes_config.yaml ./package
