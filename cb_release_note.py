@@ -1,6 +1,5 @@
 import datetime
 import os
-import time
 from inspect import getmembers, isfunction
 
 import editor
@@ -41,7 +40,7 @@ def load_config():
 
 def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(colored(pyfiglet.figlet_format(f'CB Release Notes  {version_number}'), 'green'))
+    print(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
 
 
 def get_user_options(config):
@@ -95,8 +94,6 @@ def get_user_options(config):
                 choices = inquirer.checkbox(
                     message=field['message'],
                     choices=field['choices'],
-                    validate=lambda selected_choices: len(selected_choices) > 0,
-                    invalid_message="You must select at least one setting",
                 ).execute()
                 user_settings.fields[field['name']] = ','.join(choices)
 
@@ -112,10 +109,9 @@ def get_user_options(config):
     # Timestamp the filename
     file_stamp = datetime.datetime.now().strftime('%Y%m%d')
     user_settings.output_file = inquirer.filepath(
-        message="Now, what's the name of the asciidoc file you wish to create?",
+        message="File name:",
         default=f'{release_set}-{file_stamp}-release-note.adoc',
         validate=lambda file_name: file_name.endswith('.adoc'),
-
     ).execute()
 
     return user_settings

@@ -1,6 +1,19 @@
+{% set component_map =
+{
+  'Android':['Java-Android', 'Kotlin', 'Kotlin-Android', 'LiteCore'],
+  'C':['C', 'LiteCore'],
+  '.NET':['.NET', 'LiteCore'],
+  'Java':['Java'],
+  'Javascript':['Kotlin', 'LiteCore'],
+  'Objective-C':['IOS', 'LiteCore'],
+  'Swift':['IOS', 'LiteCore']
+} -%}
+
 === Bug Fixes for release {{ user_settings.fields.release_number }}
 
-{% for issue in issues | selectattr('fields.issuetype.name', 'equalto', 'Bug') %}
+{% set filtered_issues = issues | filter_by_component(component_map[user_settings.fields['module']]) %}
+
+{% for issue in filtered_issues | selectattr('fields.issuetype.name', 'equalto', 'Bug') %}
 {# Why do we use `++` in the URL text? Well, devs occasionally use brackets in the field summary, which
 makes a mess of the Asciidoc translation. Using `++` will ensure the text passes through without attempting to parse it#}
 {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}] -- {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
@@ -9,7 +22,7 @@ makes a mess of the Asciidoc translation. Using `++` will ensure the text passes
 
 === Improvements for release {{ user_settings.fields.release_number }}
 
-{% for issue in issues %}
+{% for issue in filtered_issues %}
 {% if issue.fields.issuetype.name == 'Improvement' %}
 {{ user_settings.settings.url }}/browse/{{ issue.key }}[{{ issue.key }}] -- {{ user_settings.settings.url }}/browse/{{ issue.key }}[++{{ issue.fields.summary }}++]
 

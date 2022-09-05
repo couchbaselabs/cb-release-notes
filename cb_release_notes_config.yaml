@@ -9,39 +9,28 @@ release_settings:
 
   - name: couchbase-mobile
     url: https://issues.couchbase.com
-    jql: project = CBL AND issuetype in ({{issue_types}})
+    jql: project = CBL AND issuetype in (Bug, Improvement)
       AND Status = Closed
       AND Resolution = Fixed
-      AND Component in ({{components}})
+      AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
       AND Level = 'Public'
       AND fixVersion = {{release_number}}
 
     fields:
-      - name: components
-        type: choice
-        message: Please choose your components
+      - name: module
+        type: select
+        message: 'Select module:'
         choices:
-          - .NET
+          - Android
           - C
-          - iOS
+          - .NET
           - Java
-          - Java-Android
-          - Kotlin
-          - Kotlin-Android
-          - LiteCore
-      - name: issue_types
-        type: choice
-        message: Select issue type
-        choices:
-          - Bug
-          - Improvement
-          - '"New Feature"'
+          - Javascript
+          - Objective-C
+          - Swift
       - name: release_number
         type: text
-        message: Enter the release number
-      - name: release_date
-        type: text
-        message: Enter the release date (Month Year)
+        message: 'Enter the release number:'
 
     template: couchbase-mobile.jinja2
 
@@ -57,9 +46,9 @@ release_settings:
     fields:
       - name: release_date
         type: text
-        message: Enter the release date (Month Year)
+        message: 'Enter the release date (Month Year):'
       - name: release_number
         type: text
-        message: Enter the release number
+        message: 'Enter the release number:'
 
     template: couchbase-docs-server.jinja2
