@@ -29,7 +29,6 @@ release_settings:
           - Kotlin
           - Kotlin-Android
           - LiteCore
-
       - name: issue_types
         type: choice
         message: Select issue type
@@ -59,7 +58,6 @@ release_settings:
       - name: release_date
         type: text
         message: Enter the release date (Month Year)
-
       - name: release_number
         type: text
         message: Enter the release number

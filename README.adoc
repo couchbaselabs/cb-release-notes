@@ -60,7 +60,6 @@ release_settings:    <.>
       AND fixVersion = {{release_number}}
 
     fields:    <.>
-
     - name: components
       type: choice
       message: Please choose your components
@@ -73,7 +72,6 @@ release_settings:    <.>
         - Kotlin
         - Kotlin-Android
         - LiteCore
-
     - name: issue_types
       type: choice
       message: Select issue type
@@ -99,11 +97,9 @@ release_settings:    <.>
          AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
 
     fields:
-
       - name: release_date
         type: text
         message: Enter the release date (Month Year)
-
       - name: release_number
         type: text
         message: Enter the release number
@@ -130,9 +126,12 @@ https://atlassian.couchbase.com:
 IMPORTANT: The URL is used as the key for the password file.Make sure that the entries match up exactly.
 <.> The JQL statement used to retrieve the Jiras making up the release note.
 You can use macros variables (`+{{variable_name}}+`) inside the JQL, which will need to be filled in when the generator runs.
++
+TIP: Every release set should, at the very least, require the user to enter a release number.
+(However, we've chosen not to make this compulsory.)
+
 
 <.> A lot of Jiras are not meant for public consumption, so it's a good idea to check that the Jiras included in the release note are marked for public consumption.
-<.> The template that will be used to render the release note.
 
 <.> The 'fields' section is a list of fields that the program will ask for.
 The user will fill in the entries, and the value will be stored under the given name (`release_number` for example).
@@ -151,9 +150,9 @@ choice:: A multiple choice selection.
 .Making a multiple selection
 image::making-a-multiple-selection.png[]
 
+<.> The template that will be used to render the release note.
++
 For more information on `Jinja2` templates, see the https://jinja.palletsprojects.com[Jinja Documentation]
-
-NOTE: Every release set should require a release number at the very least.
 
 == Running the program
 
