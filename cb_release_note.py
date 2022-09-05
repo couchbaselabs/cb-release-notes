@@ -180,10 +180,9 @@ def main():
 
     print(f'Searching on ==> {search}')
 
-    with alive_bar(title='Retrieving jiras …', manual=True) as bar:
+    with alive_bar(title='Retrieving jiras ...', manual=True) as bar:
 
         while True:
-            time.sleep(.005)
             retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)
             if len(retrieved_issues) > 0:
                 issue_list.extend(retrieved_issues)
@@ -192,7 +191,7 @@ def main():
             else:
                 break
 
-    print('Creating document …')
+    print('Creating document ...')
     render_release_notes(settings, issue_list)
     print('Done.')
 
