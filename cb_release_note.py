@@ -60,7 +60,9 @@ def get_user_options(config):
         choices=release_sets,
         validate=lambda setting: len(setting) > 0,
         invalid_message="You must select a setting",
-        height=6
+        height=6,
+        qmark='',
+        amark=''
     ).execute()
 
     user_settings.settings = next(setting for setting in config['release_settings'] if setting['name'] == release_set)
@@ -72,7 +74,9 @@ def get_user_options(config):
                 text = inquirer.text(
                     message=field['message'],
                     validate=lambda entered_text: len(entered_text) > 0,
-                    invalid_message="You must enter a value"
+                    invalid_message="You must enter a value",
+                    qmark='',
+                    amark=''
                 ).execute()
                 user_settings.fields[field['name']] = text
 
@@ -81,7 +85,9 @@ def get_user_options(config):
                     message=field['message'],
                     multiline=True,
                     validate=lambda entered_text: len(entered_text) > 0,
-                    invalid_message="You must enter a value"
+                    invalid_message="You must enter a value",
+                    qmark='',
+                    amark=''
                 ).execute()
                 user_settings.fields[field['name']] = text
 
@@ -94,6 +100,8 @@ def get_user_options(config):
                 choices = inquirer.checkbox(
                     message=field['message'],
                     choices=field['choices'],
+                    qmark='',
+                    amark=''
                 ).execute()
                 user_settings.fields[field['name']] = ','.join(choices)
 
@@ -103,6 +111,8 @@ def get_user_options(config):
                     choices=field['choices'],
                     validate=lambda selected_choice: len(selected_choice) > 0,
                     invalid_message="You must select one",
+                    qmark='',
+                    amark=''
                 ).execute()
                 user_settings.fields[field['name']] = choice
 
@@ -111,6 +121,8 @@ def get_user_options(config):
     user_settings.output_file = inquirer.filepath(
         message="File name:",
         default=f'{release_set}-{file_stamp}-release-note.adoc',
+        qmark='',
+        amark='',
         validate=lambda file_name: file_name.endswith('.adoc'),
     ).execute()
 
@@ -174,7 +186,7 @@ def main():
     list_position = 0
     search = parse_search_str(settings)
 
-    print(f'Searching on ==> {search}\n')
+    print(f'\nSearching on ==>\n{search}\n')
 
     with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True,) as bar:
 
