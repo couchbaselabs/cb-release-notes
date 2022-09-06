@@ -174,9 +174,9 @@ def main():
     list_position = 0
     search = parse_search_str(settings)
 
-    print(f'Searching on ==> {search}')
+    print(f'Searching on ==> {search}\n')
 
-    with alive_bar(title='Retrieving jiras ...', manual=True) as bar:
+    with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True,) as bar:
 
         while True:
             retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)
@@ -184,12 +184,13 @@ def main():
                 issue_list.extend(retrieved_issues)
                 list_position += len(retrieved_issues)
                 bar(len(issue_list) / retrieved_issues.total)
+                bar.text(f'{len(issue_list)} retrieved ...')
             else:
                 break
 
-    print('Creating document ...')
+    print('\nCreating document ...\n')
     render_release_notes(settings, issue_list)
-    print('Done.')
+    print('Done.\n')
 
 
 # Press the green button in the gutter to run the script.

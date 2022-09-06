@@ -136,7 +136,7 @@ TIP: Every release set should, at the very least, require the user to enter a re
 <.> The 'fields' section is a list of fields that the program will ask for.
 The user will fill in the entries, and the value will be stored under the given name (`release_number` for example).
 The fields can be referenced in the `jql` statement and/or the `jinja` template.
-The program currently supports three field types:
+The program  supports five field types:
 [horizontal]
 text:: An arbitrary field of text.
 multiline:: The same as text, except you can enter multiple lines.
