@@ -1,7 +1,7 @@
 import datetime
 import os
 from inspect import getmembers, isfunction
-
+from jsonschema import validate
 import editor
 import jinja2
 import pyfiglet
@@ -10,6 +10,7 @@ from InquirerPy import inquirer
 from alive_progress import alive_bar
 from jinja2 import FileSystemLoader
 from jira import JIRA
+from jsonschema.exceptions import ValidationError
 from termcolor import colored
 
 import release_note_filters
@@ -34,7 +35,11 @@ class UserSettings:
 
 def load_config():
     config_stream = open("cb_release_notes_config.yaml", "r")
+    schema_stream = open("cb_release_config_schema.yaml", "r")
     config = yaml.load(config_stream, Loader=yaml.FullLoader)
+    schema = yaml.load(schema_stream, Loader=yaml.FullLoader)
+    validate(config, schema)
+
     return config
 
 
@@ -177,32 +182,37 @@ def render_release_notes(user_settings, issue_list):
 
 
 def main():
-    configuration = load_config()
-    show_banner(configuration['version'])
-    settings = get_user_options(configuration)
-    jira = get_jira_client(settings)
+    try:
 
-    issue_list = []
-    list_position = 0
-    search = parse_search_str(settings)
+        configuration = load_config()
+        show_banner(configuration['version'])
+        settings = get_user_options(configuration)
+        jira = get_jira_client(settings)
 
-    print(f'\nSearching on ==>\n{search}\n')
+        issue_list = []
+        list_position = 0
+        search = parse_search_str(settings)
 
-    with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True,) as bar:
+        print(f'\nSearching on ==>\n{search}\n')
 
-        while True:
-            retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)
-            if len(retrieved_issues) > 0:
-                issue_list.extend(retrieved_issues)
-                list_position += len(retrieved_issues)
-                bar(len(issue_list) / retrieved_issues.total)
-                bar.text(f'{len(issue_list)} retrieved ...')
-            else:
-                break
+        with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True, ) as bar:
 
-    print('\nCreating document ...\n')
-    render_release_notes(settings, issue_list)
-    print('Done.\n')
+            while True:
+                retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)
+                if len(retrieved_issues) > 0:
+                    issue_list.extend(retrieved_issues)
+                    list_position += len(retrieved_issues)
+                    bar(len(issue_list) / retrieved_issues.total)
+                    bar.text(f'{len(issue_list)} retrieved ...')
+                else:
+                    break
+
+        print('\nCreating document ...\n')
+        render_release_notes(settings, issue_list)
+        print('Done.\n')
+
+    except ValidationError as vE:
+        print(vE.message)
 
 
 # Press the green button in the gutter to run the script.
