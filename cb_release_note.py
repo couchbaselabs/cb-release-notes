@@ -212,7 +212,7 @@ def main():
         print('Done.\n')
 
     except ValidationError as vE:
-        print(vE.message)
+        print(f'Error in configuration file ==> {vE.message}')
 
 
 # Press the green button in the gutter to run the script.
