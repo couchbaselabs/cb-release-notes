@@ -1,6 +1,8 @@
 import datetime
 import os
 from inspect import getmembers, isfunction
+
+import click
 from jsonschema import validate
 import editor
 import jinja2
@@ -33,8 +35,8 @@ class UserSettings:
           output file = {self.output_file}'
 
 
-def load_config():
-    config_stream = open("cb_release_notes_config.yaml", "r")
+def load_config(configuration_file):
+    config_stream = open(configuration_file, "r")
     schema_stream = open("cb_release_config_schema.yaml", "r")
     config = yaml.load(config_stream, Loader=yaml.FullLoader)
     schema = yaml.load(schema_stream, Loader=yaml.FullLoader)
@@ -45,11 +47,10 @@ def load_config():
 
 def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
+    click.echo(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
 
 
-def get_user_options(config):
-    user_settings = UserSettings()
+def get_user_options(user_settings, config):
 
     user_settings.password_file = config['password_file']
     user_settings.templates_directory = config['templates_directory']
@@ -121,15 +122,16 @@ def get_user_options(config):
                 ).execute()
                 user_settings.fields[field['name']] = choice
 
-    # Timestamp the filename
-    file_stamp = datetime.datetime.now().strftime('%Y%m%d')
-    user_settings.output_file = inquirer.filepath(
-        message="File name:",
-        default=f'{release_set}-{file_stamp}-release-note.adoc',
-        qmark='',
-        amark='',
-        validate=lambda file_name: file_name.endswith('.adoc'),
-    ).execute()
+    # Create and Timestamp the filename if one hasn't been supplied on the command line.
+    if user_settings.output_file is None:
+        file_stamp = datetime.datetime.now().strftime('%Y%m%d')
+        user_settings.output_file = inquirer.filepath(
+            message="File name:",
+            default=f'{release_set}-{file_stamp}-release-note.adoc',
+            qmark='',
+            amark='',
+            validate=lambda file_name: file_name.endswith('.adoc'),
+        ).execute()
 
     return user_settings
 
@@ -181,19 +183,31 @@ def render_release_notes(user_settings, issue_list):
         results.write(content)
 
 
-def main():
+@click.command()
+@click.option('--config', default='cb_release_notes_config.yaml',
+              help='The configuration YAML file to use in the setup', type=click.Path())
+@click.option('--output', help='The name of the output file', type=click.Path(), required=False)
+def main(config, output):
+    """Creates release notes from Couchbase Jiras.
+       Runs interactively, but soon to run from command line options too."""
     try:
 
-        configuration = load_config()
+        configuration = load_config(config)
         show_banner(configuration['version'])
-        settings = get_user_options(configuration)
+
+        user_settings = UserSettings()
+
+        if output is not None:
+            user_settings.output_file = output
+
+        settings = get_user_options(user_settings, configuration)
         jira = get_jira_client(settings)
 
         issue_list = []
         list_position = 0
         search = parse_search_str(settings)
 
-        print(f'\nSearching on ==>\n{search}\n')
+        click.echo(f'\nSearching on ==>\n{search}\n')
 
         with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True, ) as bar:
 
@@ -207,12 +221,12 @@ def main():
                 else:
                     break
 
-        print('\nCreating document ...\n')
+        click.echo('\nCreating document ...\n')
         render_release_notes(settings, issue_list)
-        print('Done.\n')
+        click.echo('Done.\n')
 
     except ValidationError as vE:
-        print(f'Error in configuration file ==> {vE.message}')
+        click.echo(f'Error in configuration file ==> {vE.message}')
 
 
 # Press the green button in the gutter to run the script.
