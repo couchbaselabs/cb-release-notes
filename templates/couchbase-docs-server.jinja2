@@ -9,7 +9,7 @@
 |Issue | Description
 
 {% for issue in filtered_issues  %}
-| {{ url_with_jira(user_settings.settings.url, issue.key) }}
+| {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 | {{ issue.fields.summary }}
 
 {% endfor %}

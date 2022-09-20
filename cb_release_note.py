@@ -25,12 +25,12 @@ class UserSettings:
     password_file = None
     templates_directory = None
     jira_batch_size = DEFAULT_JIRA_BATCH_SIZE
-    settings = None
+    release_set = None
     fields = {}
     output_file = None
 
     def __str__(self):
-        return f'settings = {self.settings}; \
+        return f'settings = {self.release_set}; \
           fields = {self.fields}  \
           output file = {self.output_file}'
 
@@ -71,10 +71,10 @@ def get_user_options(user_settings, config):
         amark=''
     ).execute()
 
-    user_settings.settings = next(setting for setting in config['release_settings'] if setting['name'] == release_set)
+    user_settings.release_set = next(setting for setting in config['release_settings'] if setting['name'] == release_set)
 
-    if 'fields' in user_settings.settings:
-        for field in [item for item in user_settings.settings['fields']]:
+    if 'fields' in user_settings.release_set:
+        for field in [item for item in user_settings.release_set['fields']]:
 
             if field['type'] == 'text':
                 text = inquirer.text(
@@ -143,18 +143,18 @@ def get_login_details(password_file, url_str):
 
 
 def get_jira_client(user_settings):
-    login = get_login_details(user_settings.password_file, user_settings.settings['url'])
+    login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
 
     if 'token' in login:
-        jira = JIRA(user_settings.settings['url'], token_auth=(login['token']))
+        jira = JIRA(user_settings.release_set['url'], token_auth=(login['token']))
     else:
-        jira = JIRA(user_settings.settings['url'], basic_auth=(login['username'], login['password']))
+        jira = JIRA(user_settings.release_set['url'], basic_auth=(login['username'], login['password']))
 
     return jira
 
 
 def parse_search_str(user_settings):
-    search_str = user_settings.settings['jql']
+    search_str = user_settings.release_set['jql']
     # Replace variables if you find any
     for user_variable in list(user_settings.fields.keys()):
         search_str = search_str.replace(f'{{{{{user_variable}}}}}', user_settings.fields[user_variable])
@@ -177,7 +177,7 @@ def render_release_notes(user_settings, issue_list):
                          isfunction(function)}
     environment.globals.update(support_functions)
 
-    template = environment.get_template(user_settings.settings['template'])
+    template = environment.get_template(user_settings.release_set['template'])
     content = template.render(user_settings=user_settings, issues=issue_list)
     with open(user_settings.output_file, mode="wt") as results:
         results.write(content)
