@@ -52,3 +52,20 @@ release_settings:
         message: 'Enter the release number:'
 
     template: couchbase-docs-server.jinja2
+
+  - name: couchbase-gateway
+    url: https://issues.couchbase.com
+    jql: project = CBG AND issuetype in (Bug, Improvement)
+      AND status in (Closed, Resolved)
+      AND resolution = Fixed
+      AND component in (SyncGateway)
+      AND Level = 'Public'
+      AND fixVersion = {{release_number}}
+
+    fields:
+      - name: release_number
+        type: text
+        message: 'Enter the release number:'
+
+    template: couchbase-gateway.jinja2
+

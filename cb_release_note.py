@@ -3,7 +3,6 @@ import os
 from inspect import getmembers, isfunction
 
 import click
-from jsonschema import validate
 import editor
 import jinja2
 import pyfiglet
@@ -12,6 +11,7 @@ from InquirerPy import inquirer
 from alive_progress import alive_bar
 from jinja2 import FileSystemLoader
 from jira import JIRA
+from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from termcolor import colored
 
@@ -206,8 +206,6 @@ def main(config, output):
         issue_list = []
         list_position = 0
         search = parse_search_str(settings)
-
-        click.echo(f'\nSearching on ==>\n{search}\n')
 
         with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True, ) as bar:
 

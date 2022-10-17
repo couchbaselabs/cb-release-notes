@@ -6,3 +6,4 @@ PyYAML~=6.0
 jsonschema~=4.16.0
 inquirerpy~=0.3.4
 termcolor==2.0.1
+python-editor~=1.0.4
