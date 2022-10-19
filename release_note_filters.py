@@ -22,5 +22,10 @@ def filter_by_fix_version(issues, selected_fix_versions):
             [fix_version for fix_version in issue.fields.fixVersions if fix_version.name in selected_fix_versions]]
 
 
+def filter_by_label(issues, selected_labels):
+    return [issue for issue in issues if
+            [label for label in issue.fields.labels if label in selected_labels]]
+
+
 def replace_dots(string_to_fix, char_to_replace):
     return string_to_fix.replace('.', char_to_replace)

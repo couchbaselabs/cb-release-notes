@@ -53,19 +53,25 @@ release_settings:
 
     template: couchbase-docs-server.jinja2
 
-  - name: couchbase-gateway
+  - name: sync-gateway
     url: https://issues.couchbase.com
-    jql: project = CBG AND issuetype in (Bug, Improvement)
-      AND status in (Closed, Resolved)
-      AND resolution = Fixed
-      AND component in (SyncGateway)
-      AND Level = 'Public'
-      AND fixVersion = {{release_number}}
+    jql: project = CBG AND type in (Bug, "New Feature", Epic, Improvement) AND fixVersion = {{release_number}} AND level = "Public" ORDER BY id DESC
 
     fields:
       - name: release_number
         type: text
         message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: note
+        type: multiline
+        message: 'Enter a note for the release:'
 
-    template: couchbase-gateway.jinja2
+    template: sync-gateway.jinja2
 
+  - name: sync-gateway-ki
+    url: https://issues.couchbase.com
+    jql: project = CBG AND labels in (known_issue) AND status not in (Closed, Resolved) ORDER BY id DESC
+
+    template: sync-gateway-ki.jinja2

@@ -2,6 +2,7 @@
 .passwords.yaml
 **/couchbase*.adoc
 **/docs-server*.adoc
+**/sync-gateway*.adoc
 /build/
 /dist/
 /package/
