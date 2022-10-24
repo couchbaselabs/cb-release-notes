@@ -17,6 +17,7 @@ from termcolor import colored
 
 import release_note_filters
 import release_note_functions
+import release_note_tests
 
 DEFAULT_JIRA_BATCH_SIZE = 100
 
@@ -51,7 +52,6 @@ def show_banner(version_number):
 
 
 def get_user_options(user_settings, config):
-
     user_settings.password_file = config['password_file']
     user_settings.templates_directory = config['templates_directory']
 
@@ -71,7 +71,8 @@ def get_user_options(user_settings, config):
         amark=''
     ).execute()
 
-    user_settings.release_set = next(setting for setting in config['release_settings'] if setting['name'] == release_set)
+    user_settings.release_set = next(
+        setting for setting in config['release_settings'] if setting['name'] == release_set)
 
     if 'fields' in user_settings.release_set:
         for field in [item for item in user_settings.release_set['fields']]:
@@ -90,7 +91,6 @@ def get_user_options(user_settings, config):
                 text = inquirer.text(
                     message=field['message'],
                     multiline=True,
-                    validate=lambda entered_text: len(entered_text) > 0,
                     invalid_message="You must enter a value",
                     qmark='',
                     amark=''
@@ -176,6 +176,10 @@ def render_release_notes(user_settings, issue_list):
     support_functions = {name: function for name, function in getmembers(release_note_functions) if
                          isfunction(function)}
     environment.globals.update(support_functions)
+
+    support_tests = {name: function for name, function in getmembers(release_note_tests) if
+                     isfunction(function)}
+    environment.tests.update(support_tests)
 
     template = environment.get_template(user_settings.release_set['template'])
     content = template.render(user_settings=user_settings, issues=issue_list)
