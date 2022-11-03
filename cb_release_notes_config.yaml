@@ -10,11 +10,9 @@ release_settings:
   - name: couchbase-mobile
     url: https://issues.couchbase.com
     jql: project = CBL AND issuetype in (Bug, Improvement)
-      AND Status = Closed
-      AND Resolution = Fixed
       AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
       AND Level = 'Public'
-      AND fixVersion = {{release_number}}
+      AND (fixVersion = {{release_number}} OR labels IN (known_issue))
     fields:
       - name: module
         type: select

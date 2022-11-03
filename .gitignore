@@ -10,4 +10,4 @@
 /cb_release_note.spec
 package.zip
 cb_release_note
-
+/__pycache__/
