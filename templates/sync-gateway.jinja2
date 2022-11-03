@@ -1,39 +1,56 @@
 == {{ user_settings.fields.release_number }} -- {{ user_settings.fields.release_date }}
 
+{% set improvements = issues | selectattr('fields.issuetype.name', 'in', 'New Feature,Epic,Improvement')
+| selectattr('fields.status.name', 'in','Resolved, Closed')
+| selectattr('fields.resolution.name', 'in','Fixed, Done')
+| rejectattr('fields.labels', 'contains', 'known_issue') | list %}
+
+{% set bugs = issues | selectattr('fields.issuetype.name', 'in', 'Bug')
+| selectattr('fields.resolution.name', 'in','Fixed')
+| rejectattr('fields.labels', 'contains', 'known_issue') | list  %}
+
+{% set known_issues = issues  | selectattr('fields.labels', 'contains', 'known_issue')
+| rejectattr('fields.status.name', 'in','Resolved, Closed') | list %}
+
 [#maint-{{user_settings.fields.release_number | replace_dots('-') }}]
 === Enhancements
 
-{% for issue in issues
-| selectattr('fields.issuetype.name', 'in', 'New Feature,Epic,Improvement')
-| selectattr('fields.status.name', 'in','Resolved, Closed')
-| selectattr('fields.resolution.name', 'in','Fixed, Done')
-| rejectattr('fields.labels', 'contains', 'known_issue') %}
+{%  if improvements | length %}
 
+{% for issue in improvements %}
 * {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
-
 {% endfor %}
+
+{% else %}
+None for this release.
+
+{%  endif %}
+
 
 === Issues and Resolutions
 
 ==== Fixed Issues
 
-{% for issue in issues
-| selectattr('fields.issuetype.name', 'in', 'Bug')
-| selectattr('fields.resolution.name', 'in','Fixed')
-| rejectattr('fields.labels', 'contains', 'known_issue')%}
+{%  if bugs | length %}
 
+{% for issue in bugs %}
 * {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
-
 {% endfor %}
+{%  else %}
+None for this release.
+
+{% endif %}
 
 ==== Known Issues
 
-{% for issue in issues | selectattr('fields.labels', 'contains', 'known_issue')
-| rejectattr('fields.status.name', 'in','Resolved, Closed') %}
-
+{%  if known_issues | length %}
+{% for issue in known_issues %}
 * {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
-
+{% else %}
+None for this release.
 {% endfor %}
+
+{% endif %}
 
 
 

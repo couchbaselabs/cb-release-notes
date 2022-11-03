@@ -11,21 +11,38 @@
 
 {% set filtered_issues = issues | filter_by_component(component_map[user_settings.fields['module']]) %}
 
+{% set bugs = filtered_issues | selectattr('fields.issuetype.name', 'in', 'Bug')
+| selectattr('fields.status.name', 'in','Resolved, Closed')
+| selectattr('fields.resolution.name', 'in','Fixed, Done')
+| rejectattr('fields.labels', 'contains', 'known_issue') | list  %}
+
+{% set improvements = filtered_issues | selectattr('fields.issuetype.name', 'in', 'Improvement')
+| selectattr('fields.status.name', 'in','Resolved, Closed')
+| selectattr('fields.resolution.name', 'in','Fixed, Done')
+| rejectattr('fields.labels', 'contains', 'known_issue') | list %}
+
+{% set known_issues = filtered_issues | selectattr('fields.labels', 'contains', 'known_issue')
+| rejectattr('fields.status.name', 'in','Resolved, Closed') | list %}
+
 // tag::issues-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
 == Fixed
 
 // tag::Fixed-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
-{% for issue in filtered_issues
-| selectattr('fields.issuetype.name', 'in', 'Bug')
-| selectattr('fields.status.name', 'in','Resolved, Closed')
-| selectattr('fields.resolution.name', 'in','Fixed, Done')
-| rejectattr('fields.labels', 'contains', 'known_issue') %}
+{% if bugs | length %}
+
+{% for issue in bugs %}
 
 * {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
 
 {% endfor %}
+
+{% else %}
+
+None for this release.
+
+{%  endif %}
 
 // end::Fixed-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
@@ -33,15 +50,19 @@
 
 // tag::Enhancements-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
-{% for issue in filtered_issues
-| selectattr('fields.issuetype.name', 'in', 'Improvement')
-| selectattr('fields.status.name', 'in','Resolved, Closed')
-| selectattr('fields.resolution.name', 'in','Fixed, Done')
-| rejectattr('fields.labels', 'contains', 'known_issue') %}
+{% if improvements | length %}
+
+{% for issue in improvements %}
 
 * {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
 
 {% endfor %}
+
+{%  else %}
+
+None for this release.
+
+{% endif %}
 
 // end::Enhancements-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
@@ -49,12 +70,20 @@
 
 // tag::KI-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
-{% for issue in filtered_issues | selectattr('fields.labels', 'contains', 'known_issue')
-| rejectattr('fields.status.name', 'in','Resolved, Closed') %}
+{% if known_issues | length %}
+
+
+{% for issue in known_issues %}
 
 * {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
 
 {% endfor %}
+
+{%  else %}
+
+None for this release.
+
+{% endif %}
 
 // end::KI-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
