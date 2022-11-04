@@ -181,6 +181,9 @@ def render_release_notes(user_settings, issue_list):
                      isfunction(function)}
     environment.tests.update(support_tests)
 
+    environment.trim_blocks = True
+    environment.lstrip_blocks = True
+
     template = environment.get_template(user_settings.release_set['template'])
     content = template.render(user_settings=user_settings, issues=issue_list)
     with open(user_settings.output_file, mode="wt") as results:

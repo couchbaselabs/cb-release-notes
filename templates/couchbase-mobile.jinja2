@@ -1,3 +1,21 @@
+{%  macro generate_issue_list(issues, heading, tag_prefix) %}
+
+== {{ heading }}
+
+// tag::{{ tag_prefix }}-{{ user_settings.fields.release_number | replace_dots('-') }}[]
+
+{% if issues | length %}
+{% for issue in issues %}
+
+* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
+{% endfor %}
+{% else %}
+None for this release.
+{%  endif %}
+// end::{{ tag_prefix }}-{{ user_settings.fields.release_number | replace_dots('-') }}[]
+
+{%  endmacro %}
+
 {% set component_map =
 {
   'Android':['Java-Android', 'Kotlin', 'Kotlin-Android', 'LiteCore'],
@@ -26,66 +44,9 @@
 
 // tag::issues-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
-== Fixed
-
-// tag::Fixed-{{ user_settings.fields.release_number | replace_dots('-') }}[]
-
-{% if bugs | length %}
-
-{% for issue in bugs %}
-
-* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
-
-{% endfor %}
-
-{% else %}
-
-None for this release.
-
-{%  endif %}
-
-// end::Fixed-{{ user_settings.fields.release_number | replace_dots('-') }}[]
-
-== Enhancements
-
-// tag::Enhancements-{{ user_settings.fields.release_number | replace_dots('-') }}[]
-
-{% if improvements | length %}
-
-{% for issue in improvements %}
-
-* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
-
-{% endfor %}
-
-{%  else %}
-
-None for this release.
-
-{% endif %}
-
-// end::Enhancements-{{ user_settings.fields.release_number | replace_dots('-') }}[]
-
-== Known Issues
-
-// tag::KI-{{ user_settings.fields.release_number | replace_dots('-') }}[]
-
-{% if known_issues | length %}
-
-
-{% for issue in known_issues %}
-
-* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} — {{ issue.fields.summary }}++]
-
-{% endfor %}
-
-{%  else %}
-
-None for this release.
-
-{% endif %}
-
-// end::KI-{{ user_settings.fields.release_number | replace_dots('-') }}[]
+{{ generate_issue_list(bugs, "Fixed", "Fixed") }}
+{{ generate_issue_list(improvements, "Enhancements", "Enhancements") }}
+{{ generate_issue_list(known_issues, "Known Issues", "KI") }}
 
 // end::issues-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 

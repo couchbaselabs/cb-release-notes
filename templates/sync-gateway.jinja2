@@ -1,4 +1,15 @@
-== {{ user_settings.fields.release_number }} -- {{ user_settings.fields.release_date }}
+{% macro generate_issue_list(issues) %}
+
+{%  if issues | length %}
+{% for issue in issues %}
+
+* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
+{% endfor %}
+{% else %}
+None for this release.
+{%  endif %}
+
+{% endmacro %}
 
 {% set improvements = issues | selectattr('fields.issuetype.name', 'in', 'New Feature,Epic,Improvement')
 | selectattr('fields.status.name', 'in','Resolved, Closed')
@@ -12,48 +23,19 @@
 {% set known_issues = issues  | selectattr('fields.labels', 'contains', 'known_issue')
 | rejectattr('fields.status.name', 'in','Resolved, Closed') | list %}
 
+== {{ user_settings.fields.release_number }} -- {{ user_settings.fields.release_date }}
+
 [#maint-{{user_settings.fields.release_number | replace_dots('-') }}]
+
 === Enhancements
-
-{%  if improvements | length %}
-
-{% for issue in improvements %}
-* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
-{% endfor %}
-
-{% else %}
-None for this release.
-
-{%  endif %}
-
+{{ generate_issue_list(improvements) }}
 
 === Issues and Resolutions
 
 ==== Fixed Issues
 
-{%  if bugs | length %}
-
-{% for issue in bugs %}
-* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
-{% endfor %}
-{%  else %}
-None for this release.
-
-{% endif %}
+{{ generate_issue_list(bugs) }}
 
 ==== Known Issues
 
-{%  if known_issues | length %}
-{% for issue in known_issues %}
-* {{ user_settings.release_set.url }}/browse/{{ issue.key }}[++{{ issue.key }} {{ issue.fields.summary }}++]
-{% else %}
-None for this release.
-{% endfor %}
-
-{% endif %}
-
-
-
-
-
-
+{{ generate_issue_list(known_issues) }}
