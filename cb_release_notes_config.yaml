@@ -28,6 +28,9 @@ release_settings:
       - name: release_number
         type: text
         message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (month year)'
     template: couchbase-mobile.jinja2
 
   - name: docs-server

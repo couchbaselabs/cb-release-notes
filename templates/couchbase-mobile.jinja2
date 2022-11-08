@@ -1,9 +1,4 @@
 {%  macro generate_issue_list(issues, heading, tag_prefix) %}
-
-== {{ heading }}
-
-// tag::{{ tag_prefix }}-{{ user_settings.fields.release_number | replace_dots('-') }}[]
-
 {% if issues | length %}
 {% for issue in issues %}
 
@@ -12,11 +7,10 @@
 {% else %}
 None for this release.
 {%  endif %}
-// end::{{ tag_prefix }}-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
 {%  endmacro %}
 
-{% set component_map =
+{%- set component_map =
 {
   'Android':['Java-Android', 'Kotlin', 'Kotlin-Android', 'LiteCore'],
   'C':['C', 'LiteCore'],
@@ -42,11 +36,21 @@ None for this release.
 {% set known_issues = filtered_issues | selectattr('fields.labels', 'contains', 'known_issue')
 | rejectattr('fields.status.name', 'in','Resolved, Closed') | list %}
 
-// tag::issues-{{ user_settings.fields.release_number | replace_dots('-') }}[]
+[#maint-{{ user_settings.fields.release_number | replace_dots('-') }}]
+== {{ user_settings.fields.release_number }} -- {{ user_settings.fields.release_date }}
+
+Version {{ user_settings.fields.release_number }} for {param-title} delivers the following features and enhancements:
+
+=== Enhancements
+
+{{ generate_issue_list(improvements, "Enhancements", "Enhancements") }}
+
+=== Issues and Resolutions
 
 {{ generate_issue_list(bugs, "Fixed", "Fixed") }}
-{{ generate_issue_list(improvements, "Enhancements", "Enhancements") }}
+
+=== Known Issues
+
 {{ generate_issue_list(known_issues, "Known Issues", "KI") }}
 
-// end::issues-{{ user_settings.fields.release_number | replace_dots('-') }}[]
 
