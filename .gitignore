@@ -11,3 +11,4 @@
 package.zip
 cb_release_note
 /__pycache__/
+/.fleet/settings.json
