@@ -4,13 +4,14 @@
 {% if filtered_issues | length > 0 %}
 === {{ title }}
 
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="25,66"]
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="10,40,40"]
 |===
-|Issue | Description
+|Issue | Description | Resolution
 
 {% for issue in filtered_issues  %}
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 | {{ issue.fields.summary }}
+| {nbsp}
 
 {% endfor %}
 |===
@@ -18,7 +19,7 @@
 {% endmacro %}
 
 [#release-{{ user_settings.fields.release_number | replace_dots('') }}]
-== Release {{ user_settings.fields.release_number }}  ({{ user_settings.fields.release_date}})
+== Release {{ user_settings.fields.release_number }} ({{ user_settings.fields.release_date}})
 
 Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date}}.
 This maintenance release contains fixes to issues.
@@ -27,7 +28,7 @@ This maintenance release contains fixes to issues.
 
 {{ generate_issue_table(issues, 'Installer', ['installer'], 'installation') }}
 {{ generate_issue_table(issues, 'Cluster Manager', ['ns_server'], 'cluster-manager') }}
-{{ generate_issue_table(issues, 'Storage', ['storage-engine', 'couchbase-bucket'], 'storage') }}
+{{ generate_issue_table(issues, 'Storage', ['storage-engine','couchbase-bucket'], 'storage') }}
 {{ generate_issue_table(issues, 'Data Service', ['memcached'], 'data-service') }}
 {{ generate_issue_table(issues, 'Views', ['view-engine'], 'views') }}
 {{ generate_issue_table(issues, 'XDCR', ['XDCR'], 'xdcr') }}
@@ -37,5 +38,5 @@ This maintenance release contains fixes to issues.
 {{ generate_issue_table(issues, 'Analytics Service', ['analytics'], 'analytics-service') }}
 {{ generate_issue_table(issues, 'Index Service', ['secondary-index'], 'index-service') }}
 {{ generate_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
-
+{{ generate_issue_table(issues, 'Tools', ['tools'], 'tools') }}
 
