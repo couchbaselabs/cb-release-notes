@@ -36,9 +36,9 @@ release_settings:
   - name: docs-server
     url: https://issues.couchbase.com
     jql: project = "Couchbase Server" 
-         AND fixVersion = {{release_number}} 
-         AND (labels = releasenote OR summary ~ BP) 
-         AND (level is EMPTY OR level != Private) 
+         AND fixVersion = {{release_number}}
+         AND (labels = releasenote OR summary ~ BP)
+         AND (level is EMPTY OR level != Private)
          AND resolution in (Fixed)
          AND component in (analytics, eventing, fts, ns_server, query, query_tools,
          rbac, XDCR, memcached, secondary-index, installer, 

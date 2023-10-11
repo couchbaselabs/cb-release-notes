@@ -5,6 +5,11 @@ def filter_by_component(issues, selected_components):
             [component for component in issue.fields.components if component.name in selected_components]]
 
 
+def filter_out_by_component(issues, selected_components):
+    return [issue for issue in issues if
+            [component for component in issue.fields.components if component.name not in selected_components]]
+
+
 def filter_by_status(issues, selected_statuses):
     return [issue for issue in issues if issue.fields.status.name in selected_statuses]
 
