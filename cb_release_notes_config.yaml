@@ -13,6 +13,7 @@ release_settings:
       AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
       AND Level = 'Public'
       AND (fixVersion = {{release_number}} OR labels IN (known_issue))
+      ORDER BY key ASC
     fields:
       - name: module
         type: select
@@ -41,6 +42,7 @@ release_settings:
          AND component in (analytics, eventing, fts, ns_server, query, query_tools,
          rbac, XDCR, memcached, secondary-index, installer, 
          storage-engine, view-engine, couchbase-bucket)
+         ORDER BY key ASC
     fields:
       - name: release_date
         type: text
@@ -54,7 +56,8 @@ release_settings:
     url: https://issues.couchbase.com
     jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
       AND (fixVersion = {{release_number}} OR labels IN (known_issue))
-      AND level = "Public" ORDER BY id DESC
+      AND level = "Public" 
+      ORDER BY key ASC
     fields:
       - name: release_number
         type: text
