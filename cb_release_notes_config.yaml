@@ -8,7 +8,7 @@ jira_batch_size: 50
 release_settings:
 
   - name: couchbase-mobile
-    url: https://issues.couchbase.com
+    url: https://jira.issues.couchbase.com
     jql: project = CBL AND issuetype in (Bug, Improvement)
       AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
       AND Level = 'Public'
@@ -35,10 +35,10 @@ release_settings:
     template: couchbase-mobile.jinja2
 
   - name: docs-server
-    url: https://issues.couchbase.com
+    url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" AND fixVersion = {{release_number}} 
          AND (labels = releasenote OR summary ~ BP) 
-         AND (level is EMPTY OR level != Private) AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix")
+         AND level is EMPTY AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix")
          AND component in (analytics, eventing, fts, ns_server, query, query_tools,
          rbac, XDCR, memcached, secondary-index, installer, 
          storage-engine, view-engine, couchbase-bucket)
@@ -53,7 +53,7 @@ release_settings:
     template: couchbase-docs-server.jinja2
 
   - name: sync-gateway
-    url: https://issues.couchbase.com
+    url: https://jira.issues.couchbase.com
     jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
       AND (fixVersion = {{release_number}} OR labels IN (known_issue))
       AND level = "Public" 

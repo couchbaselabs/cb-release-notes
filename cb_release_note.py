@@ -143,13 +143,9 @@ def get_login_details(password_file, url_str):
 
 
 def get_jira_client(user_settings):
+
     login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
-
-    if 'token' in login:
-        jira = JIRA(user_settings.release_set['url'], token_auth=(login['token']))
-    else:
-        jira = JIRA(user_settings.release_set['url'], basic_auth=(login['username'], login['password']))
-
+    jira = JIRA(server=user_settings.release_set['url'], basic_auth=(login['username'], login['token']))
     return jira
 
 
