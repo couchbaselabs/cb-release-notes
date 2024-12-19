@@ -1,6 +1,7 @@
 import datetime
 import os
 from inspect import getmembers, isfunction
+from pprint import pprint
 
 import click
 import editor
@@ -145,7 +146,7 @@ def get_login_details(password_file, url_str):
 def get_jira_client(user_settings):
 
     login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
-    jira = JIRA(server=user_settings.release_set['url'], basic_auth=(login['username'], login['token']))
+    jira = JIRA(basic_auth=(login['username'], login['token']), options={'server': user_settings.release_set['url']})
     return jira
 
 
@@ -210,7 +211,7 @@ def main(config, output):
         list_position = 0
         search = parse_search_str(settings)
 
-        with alive_bar(title='Retrieving jiras ...', manual=True, dual_line=True, ) as bar:
+        with alive_bar(title='Retrieving jira tickets ...', manual=True, dual_line=True, ) as bar:
 
             while True:
                 retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)

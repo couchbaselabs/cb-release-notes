@@ -2,19 +2,16 @@
 {% set filtered_issues = issues | filter_by_component(components) %}
 
 {% if filtered_issues | length > 0 %}
-=== {{ title }}
 
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="10,40,40"]
-|===
-|Issue | Description | Resolution
+[#section-fixed-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}]
+==== {{ title }}
 
 {% for issue in filtered_issues %}
-| {{ url_with_jira(user_settings.release_set.url, issue.key) }}
-| {{ issue.fields.summary }}
-| {nbsp}
+{{ url_with_jira(user_settings.release_set.url, issue.key) }}::
+{{ issue.fields.summary }}
 
 {% endfor %}
-|===
+
 {% endif %}
 {% endmacro %}
 
@@ -23,19 +20,16 @@
 {% set filtered_issues = issues | filter_out_by_component(components) %}
 
 {% if filtered_issues | length > 0 %}
-=== {{ title }}
 
-[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="10,40,40"]
-|===
-|Issue | Description | Resolution
+[#section-fixed-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}]
+==== {{ title }}
 
 {% for issue in filtered_issues %}
-| {{ url_with_jira(user_settings.release_set.url, issue.key) }}
-| {{ issue.fields.summary }}
-| {nbsp}
+{{ url_with_jira(user_settings.release_set.url, issue.key) }}::
+{{ issue.fields.summary }}
 
 {% endfor %}
-|===
+
 {% endif %}
 {% endmacro %}
 
@@ -47,7 +41,7 @@
 Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date }}.
 This maintenance release contains fixes to issues.
 
-== Fixed Issues
+=== Fixed Issues
 
 {{ generate_issue_table(issues, 'Installer', ['installer'], 'installation') }}
 {{ generate_issue_table(issues, 'Cluster Manager', ['ns_server'], 'cluster-manager') }}
@@ -63,7 +57,7 @@ This maintenance release contains fixes to issues.
 {{ generate_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
 {{ generate_issue_table(issues, 'Tools', ['tools'], 'tools') }}
 {{ generate_uncategorized_issue_table(issues, 'Uncategorized',['installer', 'ns_server', 
-'storage-engine', 'couchbase-bucket', 'memcached', 'XDCR', 'query', 'eventing',
+'storage-engine', 'couchbase-bucket', 'XDCR', 'query', 'eventing',
 'tools','analytics', 'secondary-index', 
 'fts', 'tools' ],'uncategorized') }}
 

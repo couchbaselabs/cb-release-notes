@@ -32,7 +32,7 @@ The script and its associated libraries are packaged as single executable.
 ----
 <.> The application
 <.> The application's configuration file.
-<.> A template for generating the Asciidoc release note.
+<.> A template for generating the AsciiDoc release note.
 +
 NOTE: The location of the templates can be specified in `cb_release_notes_config.yaml`.
 
@@ -43,72 +43,78 @@ Release notes are created from a `release set` specified in the configuration fi
 [source, yaml]
 ----
 # Configuration file for the release notes builder
-version: "1.0"    <.>
+version: "1.0" # <.>
 
-password_file: ./.passwords.yaml    <.>
-templates_directory: ./templates    <.>
+password_file: ./.passwords.yaml #<.>
+templates_directory: ./templates #<.>
+jira_batch_size: 50
 
-release_settings:    <.>
+release_settings: #<.>
 
   - name: couchbase-mobile
-    url: https://issues.couchbase.com    <.>
-    jql: project = CBL AND issuetype in ({{issue_types}})    <.>
-      AND Status = Closed
-      AND Resolution = Fixed
-      AND Component in ({{components}})
-      AND Level = 'Public'    <.>
-      AND fixVersion = {{release_number}}
-
-    fields:    <.>
-    - name: components
-      type: choice
-      message: Please choose your components
-      choices:
-        - .NET
-        - C
-        - iOS
-        - Java
-        - Java-Android
-        - Kotlin
-        - Kotlin-Android
-        - LiteCore
-    - name: issue_types
-      type: choice
-      message: Select issue type
-      choices:
-        - Bug
-        - Improvement
-        - "New Feature"
-    - name: release_number
-      type: text
-      message: Enter the release number
-    - name: release_date
-      type: text
-      message: Enter the release date (Month Year)
-
-    template: couchbase-mobile.jinja2    <.>
+    url: https://jira.issues.couchbase.com #<.>
+    jql: project = CBL AND issuetype in (Bug, Improvement) # <.>
+      AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
+      AND (fixVersion = {{release_number}} OR labels IN (known_issue))
+      ORDER BY key ASC
+    fields:
+      - name: module
+        type: select
+        message: 'Select module:'
+        choices:
+          - Android
+          - C
+          - .NET
+          - Java
+          - Javascript
+          - Objective-C
+          - Swift
+      - name: release_number
+        type: text
+        message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (month year)'
+    template: couchbase-mobile.jinja2
 
   - name: docs-server
-    url: https://issues.couchbase.com
-    jql: project = MB AND issuetype = Bug
-         AND status = Closed
-         AND resolution = Fixed
-         AND fixVersion IN ({{release_number}})
-         AND component in (analytics, eventing, fts, ns_server, query, query_tools, rbac, XDCR, memcached)
-
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" AND fixVersion = {{release_number}}
+         AND (labels = releasenote OR summary ~ BP)
+         AND level is EMPTY AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix")
+         AND component in (analytics, eventing, fts, ns_server, query, query_tools,
+         rbac, XDCR, memcached, secondary-index, installer,
+         storage-engine, view-engine, couchbase-bucket)
+         ORDER BY key ASC
     fields:
       - name: release_date
         type: text
-        message: Enter the release date (Month Year)
+        message: 'Enter the release date (Month Year):'
       - name: release_number
         type: text
-        message: Enter the release number
-
+        message: 'Enter the release number:'
     template: couchbase-docs-server.jinja2
+
+  - name: sync-gateway
+    url: https://jira.issues.couchbase.com
+    jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement)
+      AND (fixVersion = {{release_number}} OR labels IN (known_issue))
+      AND level = "Public" # <.>
+      ORDER BY key ASC
+    fields: #<.>
+      - name: release_number
+        type: text
+        message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+    template: sync-gateway.jinja2
+
 ----
+
 <.> The version of the application.
 This is just to help keep track of things.
-<.> The location of the passwords file. URLS in the `release-settings` require a username/password or a token for access. These are stored in a separate file that is keyed to the URL:
+<.> The location of the passwords file. URLS in the `release-settings` require a username/password or a token for access. These are stored in a separate file keyed to the URL:
 +
 [source, yaml]
 ----

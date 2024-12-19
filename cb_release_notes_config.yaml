@@ -36,13 +36,7 @@ release_settings:
 
   - name: docs-server
     url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" AND fixVersion = {{release_number}} 
-         AND (labels = releasenote OR summary ~ BP) 
-         AND level is EMPTY AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix")
-         AND component in (analytics, eventing, fts, ns_server, query, query_tools,
-         rbac, XDCR, memcached, secondary-index, installer, 
-         storage-engine, view-engine, couchbase-bucket)
-         ORDER BY key ASC
+    jql: filter={{filter_id}}
     fields:
       - name: release_date
         type: text
@@ -50,6 +44,9 @@ release_settings:
       - name: release_number
         type: text
         message: 'Enter the release number:'
+      - name: filter_id
+        type: text
+        message: 'Enter the filter ID:'
     template: couchbase-docs-server.jinja2
 
   - name: sync-gateway
