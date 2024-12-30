@@ -8,7 +8,7 @@
 
 {% for issue in filtered_issues %}
 {{ url_with_jira(user_settings.release_set.url, issue.key) }}::
-{{ issue.fields.summary }}
+{{ issue.fields['customfield_11402'] }}
 
 {% endfor %}
 
@@ -26,7 +26,7 @@
 
 {% for issue in filtered_issues %}
 {{ url_with_jira(user_settings.release_set.url, issue.key) }}::
-{{ issue.fields.summary }}
+{{ issue.fields['customfield_11402']}}
 
 {% endfor %}
 
@@ -58,6 +58,7 @@ This maintenance release contains fixes to issues.
 {{ generate_issue_table(issues, 'Tools', ['tools'], 'tools') }}
 {{ generate_uncategorized_issue_table(issues, 'Uncategorized',['installer', 'ns_server', 
 'storage-engine', 'couchbase-bucket', 'XDCR', 'query', 'eventing',
+'view-engine','XDCR', 'query', 'eventing',
 'tools','analytics', 'secondary-index', 
 'fts', 'tools' ],'uncategorized') }}
 
