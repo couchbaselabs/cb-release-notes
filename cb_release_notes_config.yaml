@@ -11,7 +11,6 @@ release_settings:
     url: https://jira.issues.couchbase.com
     jql: project = CBL AND issuetype in (Bug, Improvement)
       AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
-      AND Level = 'Public'
       AND (fixVersion = {{release_number}} OR labels IN (known_issue))
       ORDER BY key ASC
     fields:
@@ -48,14 +47,13 @@ release_settings:
         message: 'Enter the release date (Month Year):'
       - name: release_number
         type: text
-        message: 'Enter the release number:'
+        message: 'Enter the release label:'
     template: couchbase-docs-server.jinja2
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
     jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
-      AND (fixVersion = {{release_number}} OR labels IN (known_issue))
-      AND level = "Public" 
+      AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
       ORDER BY key ASC
     fields:
       - name: release_number
