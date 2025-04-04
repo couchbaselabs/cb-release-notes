@@ -241,21 +241,25 @@ def main(config, output):
                 else:
                     break
 
-        click.echo('\nCreating document ...\n')
-
-        click.echo('\nSummarizing descriptions and comments ...\n')
+            bar.text(f'{len(issue_list)} retrieved ...')
 
         ai_client = get_openai_client()
 
-        for issue in issue_list:
-            issue_summary = retrieve_description(issue)
-            issue_comments = retrieve_comments(issue)
-            ai_summary = get_release_note_summary(ai_client, issue_summary + issue_comments)
-            issue.fields.ai_summary = ai_summary.output_text
+        with alive_bar(title='Summarizing descriptions and comments ...', manual=True, dual_line=True, ) as bar:
+
+            bar.text('summarizing ...')
+
+            for index, issue in enumerate(issue_list):
+                issue_summary = retrieve_description(issue)
+                issue_comments = retrieve_comments(issue)
+                ai_summary = get_release_note_summary(ai_client, issue_summary + issue_comments)
+                issue.fields.ai_summary = ai_summary.output_text
+                bar((index + 1) / len(issue_list))
+                bar.text(f'{index + 1} summarized ...')
 
         render_release_notes(settings, issue_list)
+        click.echo('Done!')
 
-        click.echo('Done.\n')
 
     except ValidationError as vE:
         click.echo(f'Error in configuration file ==> {vE.message}')
