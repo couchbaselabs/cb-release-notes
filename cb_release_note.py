@@ -1,7 +1,6 @@
 import datetime
 import os
 from inspect import getmembers, isfunction
-from pprint import pprint
 
 import click
 import editor
@@ -15,6 +14,7 @@ from jira import JIRA
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from termcolor import colored
+from openai import OpenAI
 
 import release_note_filters
 import release_note_functions
@@ -144,7 +144,6 @@ def get_login_details(password_file, url_str):
 
 
 def get_jira_client(user_settings):
-
     login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
     jira = JIRA(basic_auth=(login['username'], login['token']), options={'server': user_settings.release_set['url']})
     return jira
@@ -162,6 +161,25 @@ def parse_search_str(user_settings):
 def retrieve_issues(jira, search_str, start_at, batch_size):
     issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
     return issues
+
+def get_openai_client():
+    return OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+def get_release_note_summary(ai_client, text_to_summarize):
+
+
+    return ai_client.responses.create(
+        model="gpt-4o",
+        instructions=f"Summarize the following text into a paragraph:",
+        input= f"{text_to_summarize}"
+    )
+
+def retrieve_description(issue):
+    return issue.fields.summary
+
+
+def retrieve_comments(issue):
+    return " ".join(comment.body for comment in issue.fields.comment.comments)
 
 
 def render_release_notes(user_settings, issue_list):
@@ -224,7 +242,19 @@ def main(config, output):
                     break
 
         click.echo('\nCreating document ...\n')
+
+        click.echo('\nSummarizing descriptions and comments ...\n')
+
+        ai_client = get_openai_client()
+
+        for issue in issue_list:
+            issue_summary = retrieve_description(issue)
+            issue_comments = retrieve_comments(issue)
+            ai_summary = get_release_note_summary(ai_client, issue_summary + issue_comments)
+            issue.fields.ai_summary = ai_summary.output_text
+
         render_release_notes(settings, issue_list)
+
         click.echo('Done.\n')
 
     except ValidationError as vE:

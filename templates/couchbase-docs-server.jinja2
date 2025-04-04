@@ -10,7 +10,11 @@
 
 {% for issue in filtered_issues %}
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
-| {{ issue.fields.summary }}
+{% if  issue.fields['customfield_11402'] is not none  %}
+| {{ issue.fields['customfield_11402'] }}
+{% else %}
+| {{ issue.fields.ai_summary }}
+{% endif %}
 | {nbsp}
 
 {% endfor %}
@@ -31,7 +35,11 @@
 
 {% for issue in filtered_issues %}
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
-| {{ issue.fields.summary }}
+{% if  issue.fields['customfield_11402'] is not none  %}
+| {{ issue.fields['customfield_11402'] }}
+{% else %}
+| {{ issue.fields.ai_summary }}
+{% endif %}
 | {nbsp}
 
 {% endfor %}
