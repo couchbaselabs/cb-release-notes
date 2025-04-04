@@ -257,6 +257,7 @@ def main(config, output):
                 bar((index + 1) / len(issue_list))
                 bar.text(f'{index + 1} summarized ...')
 
+
         render_release_notes(settings, issue_list)
         click.echo('Done!')
 
