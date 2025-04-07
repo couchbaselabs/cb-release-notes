@@ -37,6 +37,8 @@ $defs:
           $ref: '#/$defs/fieldSettings'
       template:
         type: string
+      ai_prompt:
+        type: string
     required:
       - name
       - url

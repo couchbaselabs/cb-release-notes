@@ -27,6 +27,7 @@ class UserSettings:
     password_file = None
     templates_directory = None
     jira_batch_size = DEFAULT_JIRA_BATCH_SIZE
+    ai_prompt = None
     release_set = None
     fields = {}
     output_file = None
@@ -169,12 +170,12 @@ def retrieve_issues(jira, search_str, start_at, batch_size):
 def get_openai_client(api_key):
     return OpenAI(api_key=api_key)
 
-def get_release_note_summary(ai_client, text_to_summarize):
+def get_release_note_summary(ai_client, ai_prompt, text_to_summarize):
 
 
     return ai_client.responses.create(
         model="gpt-4o",
-        instructions=f"Summarize the following text into a paragraph:",
+        instructions=ai_prompt,
         input= f"{text_to_summarize}"
     )
 
@@ -213,9 +214,11 @@ def render_release_notes(user_settings, issue_list):
 @click.option('--config', default='cb_release_notes_config.yaml',
               help='The configuration YAML file to use in the setup', type=click.Path())
 @click.option('--output', help='The name of the output file', type=click.Path(), required=False)
-def main(config, output):
-    """Creates release notes from Couchbase Jiras.
-       Runs interactively, but soon to run from command line options too."""
+@click.option('--summarize', help='Add an OpenAI generated summary to notes without a release note description',
+              is_flag=True, default=False)
+@click.version_option(version='1.0.0')
+def main(config, output, summarize):
+    """Creates release notes from Couchbase Jiras."""
     try:
 
         configuration = load_config(config)
@@ -249,17 +252,21 @@ def main(config, output):
 
         ai_client = get_openai_client(user_settings.openai_api_key)
 
-        with alive_bar(title='Summarizing descriptions and comments ...', manual=True, dual_line=True, ) as bar:
+        if summarize:
 
-            bar.text('summarizing ...')
+            with alive_bar(title='Summarizing descriptions and comments ...', manual=True, dual_line=True, ) as bar:
 
-            for index, issue in enumerate(issue_list):
-                issue_summary = retrieve_description(issue)
-                issue_comments = retrieve_comments(issue)
-                ai_summary = get_release_note_summary(ai_client, issue_summary + issue_comments)
-                issue.fields.ai_summary = ai_summary.output_text
-                bar((index + 1) / len(issue_list))
-                bar.text(f'{index + 1} summarized ...')
+                bar.text('summarizing ...')
+
+                for index, issue in enumerate(issue_list):
+                    issue_summary = retrieve_description(issue)
+                    issue_comments = retrieve_comments(issue)
+                    ai_summary = get_release_note_summary(ai_client,
+                                                          user_settings.release_set['ai_prompt'],
+                                                          issue_summary + issue_comments)
+                    issue.fields.ai_summary = ai_summary.output_text
+                    bar((index + 1) / len(issue_list))
+                    bar.text(f'{index + 1} summarized ...')
 
 
         render_release_notes(settings, issue_list)

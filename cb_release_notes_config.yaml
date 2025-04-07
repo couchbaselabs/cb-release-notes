@@ -32,6 +32,7 @@ release_settings:
         type: text
         message: 'Enter the release date (month year)'
     template: couchbase-mobile.jinja2
+    ai_prompt: "Summarize the following into a single paragraph:"
 
   - name: docs-server
     url: https://jira.issues.couchbase.com
@@ -49,6 +50,7 @@ release_settings:
         type: text
         message: 'Enter the release label:'
     template: couchbase-docs-server.jinja2
+    ai_prompt: "Summarize the following into a single paragraph:"
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
@@ -63,4 +65,5 @@ release_settings:
         type: text
         message: 'Enter the release date (Month Year):'
     template: sync-gateway.jinja2
+    ai_prompt: "Summarize the following into a single paragraph:"
 
