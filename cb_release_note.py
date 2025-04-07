@@ -186,7 +186,6 @@ def retrieve_description(issue):
 def retrieve_comments(issue):
     return " ".join(comment.body for comment in issue.fields.comment.comments)
 
-
 def render_release_notes(user_settings, issue_list):
     environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True)
 
@@ -216,18 +215,24 @@ def render_release_notes(user_settings, issue_list):
 @click.option('--output', help='The name of the output file', type=click.Path(), required=False)
 @click.option('--summarize', '--summarise', help='Add an OpenAI generated summary to notes without a release note description',
               is_flag=True, default=False)
-@click.version_option(version='1.0.0')
-def main(config, output, summarize):
+@click.option('--version',  is_flag=True)
+@click.pass_context
+def main(ctx, config, output, summarize, version):
     """Creates release notes from Couchbase Jiras."""
     try:
 
         configuration = load_config(config)
-        show_banner(configuration['version'])
 
         user_settings = UserSettings()
 
         if output is not None:
             user_settings.output_file = output
+
+        if version:
+            click.echo(f'Version {configuration["version"]}')
+            ctx.exit()
+
+        show_banner(configuration['version'])
 
         settings = get_user_options(user_settings, configuration)
         jira = get_jira_client(settings)
