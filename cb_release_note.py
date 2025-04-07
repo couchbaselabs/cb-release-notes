@@ -214,7 +214,7 @@ def render_release_notes(user_settings, issue_list):
 @click.option('--config', default='cb_release_notes_config.yaml',
               help='The configuration YAML file to use in the setup', type=click.Path())
 @click.option('--output', help='The name of the output file', type=click.Path(), required=False)
-@click.option('--summarize', help='Add an OpenAI generated summary to notes without a release note description',
+@click.option('--summarize', '--summarise', help='Add an OpenAI generated summary to notes without a release note description',
               is_flag=True, default=False)
 @click.version_option(version='1.0.0')
 def main(config, output, summarize):
