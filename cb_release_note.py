@@ -30,6 +30,7 @@ class UserSettings:
     release_set = None
     fields = {}
     output_file = None
+    openai_api_key = None
 
     def __str__(self):
         return f'settings = {self.release_set}; \
@@ -58,6 +59,9 @@ def get_user_options(user_settings, config):
 
     if "jira_batch_size" in config:
         user_settings.jira_batch_size = config["jira_batch_size"]
+
+    if "openai_api_key" in config:
+        user_settings.openai_api_key = config["openai_api_key"]
 
     # Get the settings details from the configuration
     release_sets = [item['name'] for item in config['release_settings']]
@@ -162,8 +166,8 @@ def retrieve_issues(jira, search_str, start_at, batch_size):
     issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
     return issues
 
-def get_openai_client():
-    return OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+def get_openai_client(api_key):
+    return OpenAI(api_key=api_key)
 
 def get_release_note_summary(ai_client, text_to_summarize):
 
@@ -243,7 +247,7 @@ def main(config, output):
 
             bar.text(f'{len(issue_list)} retrieved ...')
 
-        ai_client = get_openai_client()
+        ai_client = get_openai_client(user_settings.openai_api_key)
 
         with alive_bar(title='Summarizing descriptions and comments ...', manual=True, dual_line=True, ) as bar:
 
