@@ -50,7 +50,7 @@ release_settings:
         type: text
         message: 'Enter the release label:'
     template: couchbase-docs-server.jinja2
-    ai_prompt: "Summarize the following into a single paragraph:"
+    ai_prompt: "Summarize the following into four sentences or less:"
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
