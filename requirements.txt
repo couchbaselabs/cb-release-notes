@@ -8,3 +8,8 @@ inquirerpy~=0.3.4
 termcolor~=2.1.1
 
 alive-progress~=3.2.0
+
+setuptools~=78.1.0
+openai~=1.70.0
+
+numpy
