@@ -5,6 +5,9 @@ pyinstaller cb_release_note.py --onefile --clean --name cb-release-note \
 --collect-all openai \
 --collect-all numpy \
 
+rm -rf ./package
+rm -rf ./package.zip
+
 mkdir ./package
 cp ./dist/cb-release-note ./package
 cp ./cb_release_notes_config.yaml ./package
