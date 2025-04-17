@@ -3,7 +3,6 @@ import os
 from inspect import getmembers, isfunction
 
 import click
-import editor
 import jinja2
 import pyfiglet
 import yaml
@@ -102,11 +101,6 @@ def get_user_options(user_settings, config):
                     amark=''
                 ).execute()
                 user_settings.fields[field['name']] = text
-
-            if field['type'] == 'editor':
-                prompt_text = str.encode(f'{field["message"]}')
-                text = editor.edit(contents=prompt_text)
-                user_settings.fields[field['name']] = text.decode()
 
             elif field['type'] == 'choice':
                 choices = inquirer.checkbox(
@@ -262,7 +256,8 @@ def main(ctx, config, output, summarize, version):
 
         if summarize:
 
-            with alive_bar(title='Summarizing descriptions and comments ...', manual=True, dual_line=True, ) as bar:
+            with alive_bar(title=f"[{user_settings.release_set['ai_prompt']}] ...",
+                           manual=True, dual_line=True, ) as bar:
 
                 bar.text('summarizing ...')
 

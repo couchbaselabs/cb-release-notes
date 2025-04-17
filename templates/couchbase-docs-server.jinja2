@@ -10,7 +10,7 @@
 
 {% for issue in filtered_issues %}
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
-{% if  issue.fields['customfield_11402'] is none or issue.fields['customfield_11402'] | trim | length == 0  %}
+{% if not issue.fields['customfield_11402']  %}
 | {{ issue.fields.ai_summary }}
 {% else %}
 | {{ issue.fields['customfield_11402'] }}
