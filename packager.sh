@@ -4,6 +4,7 @@ pyinstaller cb_release_note.py --onefile --clean --name cb-release-note \
 --collect-all grapheme \
 --collect-all openai \
 --collect-all numpy \
+--collect-all editor \
 
 rm -rf ./package
 rm -rf ./package.zip

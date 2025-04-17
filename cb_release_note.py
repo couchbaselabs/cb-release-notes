@@ -13,8 +13,8 @@ from jinja2 import FileSystemLoader
 from jira import JIRA
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from termcolor import colored
 from openai import OpenAI
+from termcolor import colored
 
 import release_note_filters
 import release_note_functions
@@ -167,17 +167,18 @@ def retrieve_issues(jira, search_str, start_at, batch_size):
     issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
     return issues
 
+
 def get_openai_client(api_key):
     return OpenAI(api_key=api_key)
 
+
 def get_release_note_summary(ai_client, ai_prompt, text_to_summarize):
-
-
     return ai_client.responses.create(
         model="gpt-4o",
         instructions=ai_prompt,
-        input= f"{text_to_summarize}"
+        input=f"{text_to_summarize}"
     )
+
 
 def retrieve_description(issue):
     return issue.fields.summary
@@ -185,6 +186,7 @@ def retrieve_description(issue):
 
 def retrieve_comments(issue):
     return " ".join(comment.body for comment in issue.fields.comment.comments)
+
 
 def render_release_notes(user_settings, issue_list):
     environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True)
@@ -213,9 +215,10 @@ def render_release_notes(user_settings, issue_list):
 @click.option('--config', default='cb_release_notes_config.yaml',
               help='The configuration YAML file to use in the setup', type=click.Path())
 @click.option('--output', help='The name of the output file', type=click.Path(), required=False)
-@click.option('--summarize', '--summarise', help='Add an OpenAI generated summary to notes without a release note description',
+@click.option('--summarize', '--summarise',
+              help='Add an OpenAI generated summary to notes without a release note description',
               is_flag=True, default=False)
-@click.option('--version',  is_flag=True)
+@click.option('--version', is_flag=True)
 @click.pass_context
 def main(ctx, config, output, summarize, version):
     """Creates release notes from Couchbase Jiras."""
@@ -269,10 +272,10 @@ def main(ctx, config, output, summarize, version):
                     ai_summary = get_release_note_summary(ai_client,
                                                           user_settings.release_set['ai_prompt'],
                                                           issue_summary + issue_comments)
+
                     issue.fields.ai_summary = ai_summary.output_text
                     bar((index + 1) / len(issue_list))
                     bar.text(f'{index + 1} summarized ...')
-
 
         render_release_notes(settings, issue_list)
         click.echo('Done!')
