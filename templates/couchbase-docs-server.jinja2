@@ -4,7 +4,7 @@
 {% if filtered_issues | length > 0 %}
 === {{ title }}
 
-[#dlist-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}]
+[#dlist-known-issues-{{ user_settings.fields.release_text | replace_dots('') }}-{{ suffix }}]
 
 {% for issue in filtered_issues %}
 
@@ -26,14 +26,14 @@
 {% if filtered_issues | length > 0 %}
 === {{ title }}
 
-[#dlist-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}]
+[#dlist-known-issues-{{ user_settings.fields.release_text | replace_dots('') }}-{{ suffix }}]
 
 {% for issue in filtered_issues %}
 
 *{{ url_with_jira(user_settings.release_set.url, issue.key) }}*::
 
-{% if issue.fields['customfield_11402'] is not None and issue.fields['customfield_11402'] | length > 0 %}
-{{ issue.fields['customfield_11402'] }}
+{% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
+{{ issue.raw['fields']['customfield_11402'] }}
 {% else %}
 {{ issue.fields.ai_summary }}
 {% endif %}
@@ -43,10 +43,10 @@
 
 
 
-[#release-{{ user_settings.fields.release_number | replace_dots('') }}]
-== Release {{ user_settings.fields.release_number }} ({{ user_settings.fields.release_date }})
+[#release-{{ user_settings.fields.release_text | replace_dots('') }}]
+== Release {{ user_settings.fields.release_text }} ({{ user_settings.fields.release_date }})
 
-Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date }}.
+Couchbase Server {{ user_settings.fields.release_text }} was released in {{ user_settings.fields.release_date }}.
 This maintenance release contains fixes to issues.
 
 == Fixed Issues

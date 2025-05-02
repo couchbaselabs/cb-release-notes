@@ -50,8 +50,11 @@ release_settings:
       - name: release_number
         type: text
         message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
     template: couchbase-docs-server.jinja2
-    ai_prompt: "Summarize the following into 6 sentences:"
+    ai_prompt: "Summarize the following into 6 sentences or less:"
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
@@ -68,3 +71,15 @@ release_settings:
     template: sync-gateway.jinja2
     ai_prompt: "Summarize the following into a single paragraph:"
 
+  - name: couchbase-operator
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Kubernetes" AND fixVersion = {{release_number}} and status IN (Resolved)
+    fields:
+      - name: release_number
+        type: text
+        message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+    template: couchbase-operator.jinja2
+    ai_prompt: "Summarize the following into 8 sentence or less:"
