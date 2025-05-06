@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 pyinstaller cb_release_note.py --onefile --clean --name cb-release-note \
 --collect-all pyfiglet \
 --collect-all alive_progress \

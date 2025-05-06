@@ -18,7 +18,7 @@ After generating the release notes, make sure you look through them to make sure
 
 The script and its associated libraries are packaged as single executable.
 
-. Download `package.zip`  from here and unpack it into a spare directory.
+. Download `package.zip` from https://github.com/RayOffiah/cb-release-notes/releases and unpack it into a spare directory.
 . Your directory set up should look something like this:
 +
 [source, text]
@@ -174,12 +174,30 @@ And follow the instructions.
 Now copy the generated file to the `partials` directory of the module under release.
 Then `include::` the file at the top of the existing release note.
 
+== Developing and Building
 
+You will need a Python environment.
+The following should be a minimal way to build the script.
 
+```
+brew install pyenv  # will install the whole world
 
+pyenv init
+# NOW copy/paste the suggested code into your .zshrc, and restart your shell session
 
+# replace with the current stable Python version number from https://www.python.org/downloads/
+pyenv install 3.13.3
 
+pyenv shell 3.13.3  # this points Python to the installed version just for THIS shell session
 
+pip install -r requirements.txt
 
+./packager.sh
+# creates package/ and zips it up into package.zip
+
+./package/cb-release-note
+```
+
+TODO: document how to create a new Release on Github.
 
 
