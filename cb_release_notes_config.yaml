@@ -73,7 +73,8 @@ release_settings:
 
   - name: couchbase-operator
     url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Kubernetes" AND fixVersion = {{release_number}} AND labels IN (releasenote)
+    jql: project = "Couchbase Kubernetes" 
+      AND fixVersion = {{release_number}} AND labels IN (releasenote) ORDER BY key ASC
     fields:
       - name: release_number
         type: text
