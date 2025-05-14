@@ -1,4 +1,7 @@
 # Configuration file for the release notes builder
+
+# $schema: ./cb_release_config_schema.yaml
+
 version: "1.0"
 
 password_file: ./.passwords.yaml
@@ -32,7 +35,10 @@ release_settings:
         type: text
         message: 'Enter the release date (month year)'
     template: couchbase-mobile.jinja2
-    ai_prompt: "Summarize the following into a single paragraph:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'
 
   - name: docs-server
     url: https://jira.issues.couchbase.com
@@ -54,7 +60,10 @@ release_settings:
         type: text
         message: 'Enter the release number for the title line:'
     template: couchbase-docs-server.jinja2
-    ai_prompt: "Summarize the following into 6 sentences or less:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
@@ -69,7 +78,10 @@ release_settings:
         type: text
         message: 'Enter the release date (Month Year):'
     template: sync-gateway.jinja2
-    ai_prompt: "Summarize the following into a single paragraph:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'
 
   - name: couchbase-operator
     url: https://jira.issues.couchbase.com
@@ -83,4 +95,7 @@ release_settings:
         type: text
         message: 'Enter the release date (Month Year):'
     template: couchbase-operator.jinja2
-    ai_prompt: "Summarize the following into 8 sentence or less:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'
