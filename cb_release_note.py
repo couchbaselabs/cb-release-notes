@@ -18,6 +18,7 @@ from termcolor import colored
 import release_note_filters
 import release_note_functions
 import release_note_tests
+from AIObject import ai_client_factory
 
 DEFAULT_JIRA_BATCH_SIZE = 100
 
@@ -170,17 +171,11 @@ def get_openai_client(api_key):
     return OpenAI(api_key=api_key)
 
 
-def get_release_note_summary(ai_client, selected_model, ai_prompt, text_to_summarize):
-    return ai_client.responses.create(
-        model=selected_model,
-        instructions=ai_prompt,
-        input=f"{text_to_summarize}"
-    )
-
+def get_release_note_summary(ai_client, text_to_summarize):
+    return ai_client.get_ai_response(text_to_summarize)
 
 def retrieve_description(issue):
     return issue.fields.summary
-
 
 def retrieve_comments(issue):
     return " ".join(comment.body for comment in issue.fields.comment.comments)
@@ -266,7 +261,7 @@ def main(ctx, config, output, summarize, version):
             else:
                 raise Exception('No AI service configured')
 
-            ai_client = get_openai_client(ai_service['api_key'])
+            ai_client = ai_client_factory(ai_service, user_settings)
 
             with alive_bar(title=f"[{user_settings.release_set['ai_service']['prompt']}] ...",
                            manual=True, dual_line=True, ) as bar:
@@ -277,8 +272,6 @@ def main(ctx, config, output, summarize, version):
                     issue_summary = retrieve_description(issue)
                     issue_comments = retrieve_comments(issue)
                     ai_summary = get_release_note_summary(ai_client=ai_client,
-                                                          selected_model=user_settings.release_set['ai_service']['model'],
-                                                          ai_prompt=user_settings.release_set['ai_service']['prompt'],
                                                           text_to_summarize=issue_summary + issue_comments)
 
                     issue.fields.ai_summary = ai_summary.output_text
