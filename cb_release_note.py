@@ -18,7 +18,7 @@ from termcolor import colored
 import release_note_filters
 import release_note_functions
 import release_note_tests
-from AIObject import ai_client_factory
+from AI_Clients import ai_client_factory
 
 DEFAULT_JIRA_BATCH_SIZE = 100
 
@@ -257,11 +257,12 @@ def main(ctx, config, output, summarize, version):
             password_config = get_password_set(user_settings.password_file)
 
             if user_settings.release_set['ai_service'] is not None:
-                ai_service = password_config['ai'][user_settings.release_set['ai_service']['name']]
+                ai_password_config = password_config['ai'][user_settings.release_set['ai_service']['name']]
             else:
                 raise Exception('No AI service configured')
 
-            ai_client = ai_client_factory(ai_service, user_settings)
+            ai_client = ai_client_factory(ai_password_config['api_key'],
+                                          user_settings.release_set['ai_service'])
 
             with alive_bar(title=f"[{user_settings.release_set['ai_service']['prompt']}] ...",
                            manual=True, dual_line=True, ) as bar:

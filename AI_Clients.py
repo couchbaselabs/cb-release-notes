@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from openai import OpenAI
 
 
-class AbstractAIO(ABC):
+class AbstractAIClient(ABC):
     ai_client = None
     ai_model = None
     ai_prompt = None
@@ -20,7 +20,7 @@ class AbstractAIO(ABC):
 
 
 
-class OpenAIClient(AbstractAIO):
+class OpenAIClient(AbstractAIClient):
 
     def get_ai_response(self, text):
         return self.ai_client.responses.create(
@@ -29,13 +29,13 @@ class OpenAIClient(AbstractAIO):
             input=f"{text}")
 
 
-def ai_client_factory(ai_service, user_settings):
+def ai_client_factory(ai_key, ai_service):
 
     ai_client = None
 
-    if user_settings.release_set['ai_service']['name'] == 'chatgpt':
-      ai_concrete_client = OpenAI(api_key=ai_service['api_key'])
+    if ai_service['name'] == 'chatgpt':
+      ai_concrete_client = OpenAI(api_key=ai_key)
       ai_client = OpenAIClient(ai_concrete_client,
-                             ai_model=user_settings.release_set['ai_service']['model'],
-                             ai_prompt=user_settings.release_set['ai_service']['prompt'])
+                               ai_model=ai_service['model'],
+                               ai_prompt=ai_service['prompt'])
     return ai_client
