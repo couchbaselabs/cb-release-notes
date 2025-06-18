@@ -1,8 +1,6 @@
 /tests/.pytest_cache/
 .passwords.yaml
-**/couchbase*.adoc
-**/docs-server*.adoc
-**/sync-gateway*.adoc
+*.adoc
 /build/
 /dist/
 /package/

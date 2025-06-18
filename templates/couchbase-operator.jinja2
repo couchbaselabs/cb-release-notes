@@ -16,7 +16,7 @@ This maintenance release contains fixes to issues.
 *{{ url_with_jira(user_settings.release_set.url, issue.key) }}*::
 
 {% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-{{ issue.raw['fields']['customfield_11402'] }}
+{{ issue.raw['fields']['customfield_11402'] | replace('{{', '`') | replace('}}','`') }}
 {% else %}
 {{ issue.fields.ai_summary }}
 {% endif %}
