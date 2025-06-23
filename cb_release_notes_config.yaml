@@ -9,6 +9,31 @@ templates_directory: ./templates
 jira_batch_size: 50
 
 release_settings:
+  - name: docs-server
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" 
+      AND type IN (Bug, Improvement)
+      AND fixVersion in ({{release_number}}) 
+      AND labels = releasenote 
+      AND level in (EMPTY)
+      AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
+      AND reporter not in (membersOf(couchbase-qe-team))
+      ORDER BY key ASC
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+    template: couchbase-docs-server.jinja2
+    ai_service:
+      name: gemini
+      model: 'gemini-2.5-flash'
+      prompt: 'Summarise the following 8 or less sentences'
 
   - name: couchbase-mobile
     url: https://jira.issues.couchbase.com
@@ -35,58 +60,6 @@ release_settings:
         type: text
         message: 'Enter the release date (month year)'
     template: couchbase-mobile.jinja2
-    ai_service:
-      name: chatgpt
-      model: 'gpt-4o'
-      prompt: 'Summarise the following 8 or less sentences'
-
-  - name: whats-new
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" 
-      AND type IN (Improvement)
-      AND fixVersion in ({{release_number}}) 
-      AND labels = releasenote 
-      AND level in (EMPTY)
-      AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
-      AND reporter not in (membersOf(couchbase-qe-team))
-      ORDER BY key ASC
-    fields:
-      - name: release_date
-        type: text
-        message: 'Enter the release date (Month Year):'
-      - name: release_number
-        type: text
-        message: 'Enter the release label:'
-      - name: release_text
-        type: text
-        message: 'Enter the release number for the title line:'
-    template: couchbase-docs-server-whats-new.jinja2
-    ai_service:
-      name: chatgpt
-      model: 'gpt-4o'
-      prompt: 'Summarise the following 8 or less sentences'
-
-  - name: docs-server
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" 
-      AND type IN (Bug)
-      AND fixVersion in ({{release_number}}) 
-      AND labels = releasenote 
-      AND level in (EMPTY)
-      AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
-      AND reporter not in (membersOf(couchbase-qe-team))
-      ORDER BY key ASC
-    fields:
-      - name: release_date
-        type: text
-        message: 'Enter the release date (Month Year):'
-      - name: release_number
-        type: text
-        message: 'Enter the release label:'
-      - name: release_text
-        type: text
-        message: 'Enter the release number for the title line:'
-    template: couchbase-docs-server.jinja2
     ai_service:
       name: chatgpt
       model: 'gpt-4o'

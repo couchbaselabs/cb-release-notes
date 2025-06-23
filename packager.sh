@@ -3,12 +3,13 @@
 set -e
 
 pyinstaller cb_release_note.py --onefile --clean --name cb-release-note \
---add-data "AIObject.py:." \
+--add-data "AI_Clients.py:." \
 --collect-all pyfiglet \
 --collect-all alive_progress \
 --collect-all grapheme \
 --collect-all openai \
 --collect-all numpy \
+--collect-all google \
 
 rm -rf ./package
 rm -rf ./package.zip

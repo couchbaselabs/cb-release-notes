@@ -1,7 +1,6 @@
 import datetime
 import os
 from inspect import getmembers, isfunction
-
 import click
 import jinja2
 import pyfiglet
@@ -12,7 +11,6 @@ from jinja2 import FileSystemLoader
 from jira import JIRA
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from openai import OpenAI
 from termcolor import colored
 
 import release_note_filters
@@ -35,13 +33,13 @@ class UserSettings:
     ai_prompt = None
     ai_model = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'settings = {self.release_set}; \
           fields = {self.fields}  \
           output file = {self.output_file}'
 
 
-def load_config(configuration_file):
+def load_config(configuration_file: str) -> dict:
     config_stream = open(configuration_file, "r")
     schema_stream = open("cb_release_config_schema.yaml", "r")
     config = yaml.load(config_stream, Loader=yaml.FullLoader)
@@ -55,7 +53,7 @@ def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
     click.echo(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
 
-def get_user_options(user_settings, config):
+def get_user_options(user_settings: dict, config: dict) -> dict:
     user_settings.templates_directory = config['templates_directory']
 
     if "jira_batch_size" in config:
@@ -136,24 +134,24 @@ def get_user_options(user_settings, config):
 
     return user_settings
 
-def get_password_set(password_file):
+def get_password_set(password_file: str) -> dict:
     password_stream = open(password_file, "r")
     password_config = yaml.load(password_stream, Loader=yaml.FullLoader)
     return password_config
 
 
-def get_login_details(password_file, url_str):
+def get_login_details(password_file: str, url_str: str) -> str:
     login_details = get_password_set(password_file)
     return login_details['jira'][url_str]
 
 
-def get_jira_client(user_settings):
+def get_jira_client(user_settings: dict) -> JIRA:
     login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
     jira = JIRA(basic_auth=(login['username'], login['token']), options={'server': user_settings.release_set['url']})
     return jira
 
 
-def parse_search_str(user_settings):
+def parse_search_str(user_settings: dict) -> str:
     search_str = user_settings.release_set['jql']
     # Replace variables if you find any
     for user_variable in list(user_settings.fields.keys()):
@@ -162,22 +160,17 @@ def parse_search_str(user_settings):
     return search_str
 
 
-def retrieve_issues(jira, search_str, start_at, batch_size):
+def retrieve_issues(jira: JIRA, search_str: str, start_at: int, batch_size: int) -> dict:
     issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
     return issues
 
-
-def get_openai_client(api_key):
-    return OpenAI(api_key=api_key)
-
-
-def get_release_note_summary(ai_client, text_to_summarize):
+def get_release_note_summary(ai_client, text_to_summarize) -> str:
     return ai_client.get_ai_response(text_to_summarize)
 
-def retrieve_description(issue):
+def retrieve_description(issue) -> str:
     return issue.fields.summary
 
-def retrieve_comments(issue):
+def retrieve_comments(issue) -> str:
     return " ".join(comment.body for comment in issue.fields.comment.comments)
 
 
@@ -275,7 +268,7 @@ def main(ctx, config, output, summarize, version):
                     ai_summary = get_release_note_summary(ai_client=ai_client,
                                                           text_to_summarize=issue_summary + issue_comments)
 
-                    issue.fields.ai_summary = ai_summary.output_text
+                    issue.fields.ai_summary = ai_summary
                     bar((index + 1) / len(issue_list))
                     bar.text(f'{index + 1} summarized ...')
 
