@@ -2,7 +2,6 @@ from openai import OpenAI
 from google import genai
 from abc import ABC, abstractmethod
 
-
 class AIClient(ABC):
 
     def __init__(self, ai_client, ai_model=None, ai_prompt=None):
@@ -12,12 +11,12 @@ class AIClient(ABC):
         super().__init__()
 
     @abstractmethod
-    def get_ai_response(self, text):
+    def get_ai_response(self, text) -> str:
         pass
 
 class GeminiClient(AIClient):
 
-    def get_ai_response(self, text):
+    def get_ai_response(self, text) -> str:
 
         prompt = f"{self.ai_prompt}: {text}"
 
@@ -29,7 +28,7 @@ class GeminiClient(AIClient):
 
 class OpenAIClient(AIClient):
 
-    def get_ai_response(self, text):
+    def get_ai_response(self, text) -> str:
         response =  self.ai_client.responses.create(
             model=self.ai_model,
             instructions=self.ai_prompt,
