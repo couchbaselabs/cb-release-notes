@@ -31,9 +31,9 @@ release_settings:
         message: 'Enter the release number for the title line:'
     template: couchbase-docs-server.jinja2
     ai_service:
-      name: gemini
-      model: 'gemini-2.5-flash'
-      prompt: 'Summarise the following 8 or less sentences'
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as valid asciidoc in 8 or less sentences, adding a + on separate lines between paragraphs'
 
   - name: couchbase-mobile
     url: https://jira.issues.couchbase.com
