@@ -33,7 +33,7 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following as valid asciidoc in 8 or less sentences, adding a + on separate lines between paragraphs'
+      prompt: 'Summarise the following into one paragraph of no more than 8 sentences'
 
   - name: couchbase-mobile
     url: https://jira.issues.couchbase.com
