@@ -1,0 +1,49 @@
+{% macro generate_issue_table(issues, title, components, suffix) %}
+{% set filtered_issues = issues | filter_by_component(components) %}
+
+{% if filtered_issues | length > 0 %}
+=== {{ title }}
+
+[#table-known-issues-{{ user_settings.fields.release_number | replace_dots('') }}-{{ suffix }}, cols="10,40,40"]
+|===
+|Issue | Description | Resolution
+
+{% for issue in filtered_issues %}
+| {{ url_with_jira(user_settings.release_set.url, issue.key) }}
+
+{% if not issue.fields['customfield_11402']  %}
+| {{ issue.fields.ai_summary }}
+{% else %}
+| {{ issue.raw['fields']['customfield_11402'] }}
+{% endif %}
+| Issue resolved
+
+{% endfor %}
+|===
+{% endif %}
+{% endmacro %}
+
+
+
+[#release-{{ user_settings.fields.release_number | replace_dots('') }}]
+== Release {{ user_settings.fields.release_number }} ({{ user_settings.fields.release_date }})
+
+Couchbase Server {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date }}.
+This maintenance release contains fixes to issues.
+
+== Fixed Issues
+
+{{ generate_issue_table(issues, 'Installer', ['installer'], 'installation') }}
+{{ generate_issue_table(issues, 'Cluster Manager', ['ns_server'], 'cluster-manager') }}
+{{ generate_issue_table(issues, 'Storage', ['storage-engine','couchbase-bucket'], 'storage') }}
+{{ generate_issue_table(issues, 'Data Service', ['memcached'], 'data-service') }}
+{{ generate_issue_table(issues, 'Views', ['view-engine'], 'views') }}
+{{ generate_issue_table(issues, 'XDCR', ['XDCR'], 'xdcr') }}
+{{ generate_issue_table(issues, 'Query Service', ['query'], 'query-service') }}
+{{ generate_issue_table(issues, 'Eventing Service', ['eventing'], 'eventing-service') }}
+{{ generate_issue_table(issues, 'Analytics Service', ['analytics'], 'analytics-service') }}
+{{ generate_issue_table(issues, 'Index Service', ['secondary-index'], 'index-service') }}
+{{ generate_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
+{{ generate_issue_table(issues, 'Tools', ['tools', 'build'], 'tools') }}
+
+
