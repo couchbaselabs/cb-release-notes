@@ -1,4 +1,7 @@
 # Configuration file for the release notes builder
+
+# $schema: ./cb_release_config_schema.yaml
+
 version: "1.0"
 
 password_file: ./.passwords.yaml
@@ -6,6 +9,31 @@ templates_directory: ./templates
 jira_batch_size: 50
 
 release_settings:
+  - name: docs-server
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" 
+      AND type IN (Bug, Improvement)
+      AND fixVersion in ({{release_number}}) 
+      AND labels = releasenote 
+      AND level in (EMPTY)
+      AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
+      AND reporter not in (membersOf(couchbase-qe-team))
+      ORDER BY key ASC
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+    template: couchbase-docs-server.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no heading and no more than 8 sentences'
 
   - name: couchbase-mobile
     url: https://jira.issues.couchbase.com
@@ -32,29 +60,10 @@ release_settings:
         type: text
         message: 'Enter the release date (month year)'
     template: couchbase-mobile.jinja2
-    ai_prompt: "Summarize the following into a single paragraph:"
-
-  - name: docs-server
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" 
-      AND fixVersion in ({{release_number}}) 
-      AND labels = releasenote 
-      AND level in (EMPTY)
-      AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
-      AND reporter not in (membersOf(couchbase-qe-team))
-      ORDER BY key ASC
-    fields:
-      - name: release_date
-        type: text
-        message: 'Enter the release date (Month Year):'
-      - name: release_number
-        type: text
-        message: 'Enter the release label:'
-      - name: release_text
-        type: text
-        message: 'Enter the release number for the title line:'
-    template: couchbase-docs-server.jinja2
-    ai_prompt: "Summarize the following into 6 sentences or less:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
@@ -69,12 +78,15 @@ release_settings:
         type: text
         message: 'Enter the release date (Month Year):'
     template: sync-gateway.jinja2
-    ai_prompt: "Summarize the following into a single paragraph:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'
 
   - name: couchbase-operator
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Kubernetes" 
-      AND fixVersion = {{release_number}} AND labels IN (releasenote) ORDER BY key ASC
+      AND fixVersion = {{release_number}} AND labels IN (releasenote) AND status IN ("Resolved") ORDER BY key ASC
     fields:
       - name: release_number
         type: text
@@ -83,4 +95,7 @@ release_settings:
         type: text
         message: 'Enter the release date (Month Year):'
     template: couchbase-operator.jinja2
-    ai_prompt: "Summarize the following into 8 sentence or less:"
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following 8 or less sentences'

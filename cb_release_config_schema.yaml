@@ -37,15 +37,16 @@ $defs:
           $ref: '#/$defs/fieldSettings'
       template:
         type: string
-      ai_prompt:
-        type: string
+      ai_service:
+        type: object
+        items:
+          $ref: '#$defs/aiServiceFields'
     required:
       - name
       - url
       - jql
       - template
   fieldSettings:
-    type: object
     properties:
       name:
         type: string
@@ -74,3 +75,15 @@ $defs:
     then:
       required:
         - choices
+  aiServiceFields:
+    properties:
+      name:
+        type: string
+        enum:
+          - chatgpt
+          - gemini
+          - copilot
+      model:
+        type: string
+      prompt:
+        type: string

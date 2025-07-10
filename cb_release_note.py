@@ -1,7 +1,6 @@
 import datetime
 import os
 from inspect import getmembers, isfunction
-
 import click
 import jinja2
 import pyfiglet
@@ -12,12 +11,12 @@ from jinja2 import FileSystemLoader
 from jira import JIRA
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from openai import OpenAI
 from termcolor import colored
 
 import release_note_filters
 import release_note_functions
 import release_note_tests
+from AI_Clients import ai_client_factory
 
 DEFAULT_JIRA_BATCH_SIZE = 100
 
@@ -26,19 +25,21 @@ class UserSettings:
     password_file = None
     templates_directory = None
     jira_batch_size = DEFAULT_JIRA_BATCH_SIZE
-    ai_prompt = None
     release_set = None
     fields = {}
     output_file = None
-    openai_api_key = None
+    ai_service = None
+    ai_api_key = None
+    ai_prompt = None
+    ai_model = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'settings = {self.release_set}; \
           fields = {self.fields}  \
           output file = {self.output_file}'
 
 
-def load_config(configuration_file):
+def load_config(configuration_file: str) -> dict:
     config_stream = open(configuration_file, "r")
     schema_stream = open("cb_release_config_schema.yaml", "r")
     config = yaml.load(config_stream, Loader=yaml.FullLoader)
@@ -52,16 +53,13 @@ def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
     click.echo(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
 
-
-def get_user_options(user_settings, config):
-    user_settings.password_file = config['password_file']
+def get_user_options(user_settings: dict, config: dict) -> dict:
     user_settings.templates_directory = config['templates_directory']
 
     if "jira_batch_size" in config:
         user_settings.jira_batch_size = config["jira_batch_size"]
 
-    if "openai_api_key" in config:
-        user_settings.openai_api_key = config["openai_api_key"]
+    user_settings.password_file = config['password_file']
 
     # Get the settings details from the configuration
     release_sets = [item['name'] for item in config['release_settings']]
@@ -80,6 +78,7 @@ def get_user_options(user_settings, config):
         setting for setting in config['release_settings'] if setting['name'] == release_set)
 
     if 'fields' in user_settings.release_set:
+
         for field in [item for item in user_settings.release_set['fields']]:
 
             if field['type'] == 'text':
@@ -135,20 +134,24 @@ def get_user_options(user_settings, config):
 
     return user_settings
 
+def get_password_set(password_file: str) -> dict:
+    password_stream = open(password_file, "r")
+    password_config = yaml.load(password_stream, Loader=yaml.FullLoader)
+    return password_config
 
-def get_login_details(password_file, url_str):
-    login_details_stream = open(password_file, "r")
-    login_details = yaml.load(login_details_stream, Loader=yaml.FullLoader)
-    return login_details[url_str]
+
+def get_login_details(password_file: str, url_str: str) -> str:
+    login_details = get_password_set(password_file)
+    return login_details['jira'][url_str]
 
 
-def get_jira_client(user_settings):
+def get_jira_client(user_settings: dict) -> JIRA:
     login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
     jira = JIRA(basic_auth=(login['username'], login['token']), options={'server': user_settings.release_set['url']})
     return jira
 
 
-def parse_search_str(user_settings):
+def parse_search_str(user_settings: dict) -> str:
     search_str = user_settings.release_set['jql']
     # Replace variables if you find any
     for user_variable in list(user_settings.fields.keys()):
@@ -157,28 +160,17 @@ def parse_search_str(user_settings):
     return search_str
 
 
-def retrieve_issues(jira, search_str, start_at, batch_size):
+def retrieve_issues(jira: JIRA, search_str: str, start_at: int, batch_size: int) -> dict:
     issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
     return issues
 
+def get_release_note_summary(ai_client, text_to_summarize) -> str:
+    return ai_client.get_ai_response(text_to_summarize)
 
-def get_openai_client(api_key):
-    return OpenAI(api_key=api_key)
-
-
-def get_release_note_summary(ai_client, ai_prompt, text_to_summarize):
-    return ai_client.responses.create(
-        model="gpt-4o",
-        instructions=ai_prompt,
-        input=f"{text_to_summarize}"
-    )
-
-
-def retrieve_description(issue):
+def retrieve_description(issue) -> str:
     return issue.fields.summary
 
-
-def retrieve_comments(issue):
+def retrieve_comments(issue) -> str:
     return " ".join(comment.body for comment in issue.fields.comment.comments)
 
 
@@ -232,6 +224,7 @@ def main(ctx, config, output, summarize, version):
         show_banner(configuration['version'])
 
         settings = get_user_options(user_settings, configuration)
+
         jira = get_jira_client(settings)
 
         issue_list = []
@@ -252,11 +245,19 @@ def main(ctx, config, output, summarize, version):
 
             bar.text(f'{len(issue_list)} retrieved ...')
 
-        ai_client = get_openai_client(user_settings.openai_api_key)
-
         if summarize:
 
-            with alive_bar(title=f"[{user_settings.release_set['ai_prompt']}] ...",
+            password_config = get_password_set(user_settings.password_file)
+
+            if user_settings.release_set['ai_service'] is not None:
+                ai_password_config = password_config['ai'][user_settings.release_set['ai_service']['name']]
+            else:
+                raise Exception('No AI service configured')
+
+            ai_client = ai_client_factory(ai_password_config['api_key'],
+                                          user_settings.release_set['ai_service'])
+
+            with alive_bar(title=f"[{user_settings.release_set['ai_service']['prompt']}] ...",
                            manual=True, dual_line=True, ) as bar:
 
                 bar.text('summarizing ...')
@@ -264,17 +265,17 @@ def main(ctx, config, output, summarize, version):
                 for index, issue in enumerate(issue_list):
                     issue_summary = retrieve_description(issue)
                     issue_comments = retrieve_comments(issue)
-                    ai_summary = get_release_note_summary(ai_client,
-                                                          user_settings.release_set['ai_prompt'],
-                                                          issue_summary + issue_comments)
+                    ai_summary = get_release_note_summary(ai_client=ai_client,
+                                                          text_to_summarize=issue_summary + issue_comments)
 
-                    issue.fields.ai_summary = ai_summary.output_text
+                    issue.fields.ai_summary = ai_summary
+                    issue.fields.ai_service = user_settings.release_set['ai_service']
                     bar((index + 1) / len(issue_list))
                     bar.text(f'{index + 1} summarized ...')
 
         render_release_notes(settings, issue_list)
         click.echo('Done!')
-
+        click.echo(f'Release notes written to {user_settings.output_file}')
 
     except ValidationError as vE:
         click.echo(f'Error in configuration file ==> {vE.message}')
