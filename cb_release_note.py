@@ -269,6 +269,7 @@ def main(ctx, config, output, summarize, version):
                                                           text_to_summarize=issue_summary + issue_comments)
 
                     issue.fields.ai_summary = ai_summary
+                    issue.fields.ai_service = user_settings.release_set['ai_service']
                     bar((index + 1) / len(issue_list))
                     bar.text(f'{index + 1} summarized ...')
 
