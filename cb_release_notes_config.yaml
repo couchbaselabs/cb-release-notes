@@ -34,7 +34,7 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no heading and no more than 8 sentences'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: docs-server-table-format
     url: https://jira.issues.couchbase.com
@@ -57,7 +57,7 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no heading and no more than 8 sentences'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: couchbase-mobile
     url: https://jira.issues.couchbase.com
@@ -87,7 +87,7 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following 8 or less sentences'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
@@ -105,7 +105,7 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following 8 or less sentences'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: couchbase-operator
     url: https://jira.issues.couchbase.com
@@ -122,4 +122,4 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following 8 or less sentences'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
