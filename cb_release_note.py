@@ -18,6 +18,8 @@ import release_note_functions
 import release_note_tests
 from AI_Clients import ai_client_factory
 
+import release_note_save_settings
+
 DEFAULT_JIRA_BATCH_SIZE = 100
 
 
@@ -77,6 +79,8 @@ def get_user_options(user_settings: dict, config: dict) -> dict:
     user_settings.release_set = next(
         setting for setting in config['release_settings'] if setting['name'] == release_set)
 
+    conn = release_note_save_settings.load_database('saved_settings.db')
+
     if 'fields' in user_settings.release_set:
 
         for field in [item for item in user_settings.release_set['fields']]:
@@ -86,20 +90,27 @@ def get_user_options(user_settings: dict, config: dict) -> dict:
                     message=field['message'],
                     validate=lambda entered_text: len(entered_text) > 0,
                     invalid_message="You must enter a value",
+                    default=release_note_save_settings.get_saved_items(conn, release_set, field['name']),
                     qmark='',
                     amark=''
                 ).execute()
+
                 user_settings.fields[field['name']] = text
+                release_note_save_settings.save_item(conn, release_set, field['name'], text)
+
 
             if field['type'] == 'multiline':
                 text = inquirer.text(
                     message=field['message'],
                     multiline=True,
                     invalid_message="You must enter a value",
+                    default=release_note_save_settings.get_saved_items(conn, release_set, field['name']),
                     qmark='',
                     amark=''
                 ).execute()
                 user_settings.fields[field['name']] = text
+                release_note_save_settings.save_item(conn, release_set, field['name'], text)
+
 
             elif field['type'] == 'choice':
                 choices = inquirer.checkbox(
