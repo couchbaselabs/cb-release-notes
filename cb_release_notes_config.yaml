@@ -10,6 +10,22 @@ jira_batch_size: 50
 
 release_settings:
 
+  - name: morpheus-breaking-changes
+    url: https://jira.issues.couchbase.com
+    jql: labels = breaking-change AND fixversion = Morpheus ORDER BY priority
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+    template: couchbase-morpheus-breaking-changes.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+
   - name: docs-server
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 

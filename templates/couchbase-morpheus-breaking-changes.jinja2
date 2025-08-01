@@ -4,7 +4,7 @@
 {% if filtered_issues | length > 0 %}
 === {{ title }}
 
-[#dlist-known-issues-{{ user_settings.fields.release_text | replace_dots('') }}-{{ suffix }}]
+[#breaking-changes-{{ user_settings.fields.release_text | replace_dots('') }}-{{ suffix }}]
 
 {% for issue in filtered_issues %}
 
@@ -31,7 +31,7 @@
 {% if filtered_issues | length > 0 %}
 === {{ title }}
 
-[#dlist-known-issues-{{ user_settings.fields.release_text | replace_dots('') }}-{{ suffix }}]
+[#breaking-changes-{{ user_settings.fields.release_text | replace_dots('') }}-{{ suffix }}]
 
 {% for issue in filtered_issues %}
 
@@ -53,12 +53,10 @@
 
 
 
-[#release-{{ user_settings.fields.release_text | replace_dots('') }}]
-== Release {{ user_settings.fields.release_text }} ({{ user_settings.fields.release_date }})
+[#breaking-changes-{{ user_settings.fields.release_text | replace_dots('') }}]
+== Breaking changes {{ user_settings.fields.release_text }} ({{ user_settings.fields.release_date }})
 
 Couchbase Server {{ user_settings.fields.release_text }} was released in {{ user_settings.fields.release_date }}.
-This maintenance release contains fixes to issues.
-
-== Fixed Issues
+This maintenance release contains the following breaking changes:
 
 {% include "docs-server-components.jinja2" %}
