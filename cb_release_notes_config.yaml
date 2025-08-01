@@ -79,7 +79,7 @@ release_settings:
       ORDER BY key ASC
     fields:
       - name: module
-        type: select
+        type: choice
         message: 'Select module:'
         choices:
           - Android

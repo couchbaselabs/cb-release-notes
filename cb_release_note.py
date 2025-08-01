@@ -6,6 +6,7 @@ import jinja2
 import pyfiglet
 import yaml
 from InquirerPy import inquirer
+from InquirerPy.base import Choice
 from alive_progress import alive_bar
 from jinja2 import FileSystemLoader
 from jira import JIRA
@@ -115,22 +116,27 @@ def get_user_options(user_settings: dict, config: dict) -> dict:
             elif field['type'] == 'choice':
                 choices = inquirer.checkbox(
                     message=field['message'],
-                    choices=field['choices'],
+                    choices=list(map(lambda x: Choice(x, enabled=True)
+                        if x in release_note_save_settings.get_saved_items(conn, release_set, field['name']).split(',')
+                            else Choice(x, enabled=False) , field['choices'])),
                     qmark='',
                     amark=''
                 ).execute()
                 user_settings.fields[field['name']] = ','.join(choices)
+                release_note_save_settings.save_item(conn, release_set, field['name'], ','.join(choices))
 
             elif field['type'] == 'select':
                 choice = inquirer.select(
                     message=field['message'],
                     choices=field['choices'],
+                    default=release_note_save_settings.get_saved_items(conn, release_set, field['name']),
                     validate=lambda selected_choice: len(selected_choice) > 0,
                     invalid_message="You must select one",
                     qmark='',
                     amark=''
                 ).execute()
                 user_settings.fields[field['name']] = choice
+                release_note_save_settings.save_item(conn, release_set, field['name'], choice)
 
     # Create and Timestamp the filename if one hasn't been supplied on the command line.
     if user_settings.output_file is None:

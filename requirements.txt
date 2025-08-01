@@ -1,3 +1,4 @@
+copilot-api
 jira~=3.8.0
 click~=8.1.7
 Jinja2~=3.1.6
