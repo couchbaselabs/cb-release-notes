@@ -16,7 +16,6 @@ release_settings:
       AND type IN (Bug, Improvement)
       AND fixVersion in ({{release_number}}) 
       AND labels IN (releasenote, releasenotecomplete) 
-      AND level in (EMPTY)
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC
@@ -38,11 +37,8 @@ release_settings:
 
   - name: docs-server-table-format
     url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" AND fixVersion in ({{release_number}}) 
-         AND summary !~ "System Test" 
-         AND labels IN (releasenote, releasenotecomplete)
-         AND resolution not in (Declined, "Won't Fix") 
-         AND reporter not in (membersOf(couchbase-qe-team))
+    jql: project = "Couchbase Server" AND fixVersion in (7.2.8) AND labels IN (releasenote)  AND summary !~ "System Test" AND "Release Notes Description[Paragraph]" IS NOT EMPTY AND reporter NOT IN (membersOf("couchbase-qe-team"))
+      ORDER BY key ASC
     fields:
       - name: release_date
         type: text
