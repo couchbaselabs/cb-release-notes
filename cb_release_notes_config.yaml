@@ -20,6 +20,9 @@ release_settings:
       - name: release_text
         type: text
         message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     template: couchbase-morpheus-breaking-changes.jinja2
     ai_service:
       name: chatgpt
@@ -45,6 +48,9 @@ release_settings:
       - name: release_text
         type: text
         message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     template: couchbase-docs-server.jinja2
     ai_service:
       name: chatgpt
@@ -65,6 +71,9 @@ release_settings:
       - name: release_text
         type: text
         message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     template: couchbase-docs-server-table-format.jinja2
     ai_service:
       name: chatgpt
@@ -95,6 +104,9 @@ release_settings:
       - name: release_date
         type: text
         message: 'Enter the release date (month year)'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     template: couchbase-mobile.jinja2
     ai_service:
       name: chatgpt
@@ -113,6 +125,9 @@ release_settings:
       - name: release_date
         type: text
         message: 'Enter the release date (Month Year):'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     template: sync-gateway.jinja2
     ai_service:
       name: chatgpt
@@ -130,6 +145,9 @@ release_settings:
       - name: release_date
         type: text
         message: 'Enter the release date (Month Year):'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     template: couchbase-operator.jinja2
     ai_service:
       name: chatgpt

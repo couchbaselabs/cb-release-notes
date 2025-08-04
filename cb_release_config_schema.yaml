@@ -35,6 +35,11 @@ $defs:
         type: array
         items:
           $ref: '#/$defs/fieldSettings'
+        contains:
+          type: object
+          properties:
+            type:
+              const: file
       template:
         type: string
       ai_service:
@@ -58,6 +63,7 @@ $defs:
           - choice
           - editor
           - multiline
+          - file
       message:
         type: string
       choices:

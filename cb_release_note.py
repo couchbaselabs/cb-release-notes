@@ -1,6 +1,6 @@
-import datetime
 import os
 from inspect import getmembers, isfunction
+
 import click
 import jinja2
 import pyfiglet
@@ -16,10 +16,9 @@ from termcolor import colored
 
 import release_note_filters
 import release_note_functions
+import release_note_save_settings
 import release_note_tests
 from AI_Clients import ai_client_factory
-
-import release_note_save_settings
 
 DEFAULT_JIRA_BATCH_SIZE = 100
 
@@ -138,17 +137,19 @@ def get_user_options(user_settings: dict, config: dict) -> dict:
                 user_settings.fields[field['name']] = choice
                 release_note_save_settings.save_item(conn, release_set, field['name'], choice)
 
-    # Create and Timestamp the filename if one hasn't been supplied on the command line.
-    if user_settings.output_file is None:
-        file_stamp = datetime.datetime.now().strftime('%Y%m%d')
-        user_settings.output_file = inquirer.filepath(
-            message="File name:",
-            default=f'{release_set}-{file_stamp}-release-note.adoc',
-            qmark='',
-            amark='',
-            validate=lambda file_name: file_name.endswith('.adoc'),
-        ).execute()
+            elif field['type'] == 'file':
+                file_path = inquirer.filepath(
+                    message=field['message'],
+                    default=release_note_save_settings.get_saved_items(conn, release_set, field['name']),
+                    qmark='',
+                    amark='',
+                    validate=lambda file_name: file_name.endswith('.adoc'),
+                ).execute()
+                user_settings.fields[field['name']] = file_path
+                release_note_save_settings.save_item(conn, release_set, field['name'], file_path)
+                user_settings.output_file = file_path
 
+    release_note_save_settings.close_database(conn)
     return user_settings
 
 def get_password_set(password_file: str) -> dict:

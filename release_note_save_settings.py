@@ -32,3 +32,6 @@ def get_saved_items(conn, release_module, module_field):
               (release_module, module_field))
     result = c.fetchone()
     return result[0] if result else ''
+
+def close_database(conn):
+    conn.close()
