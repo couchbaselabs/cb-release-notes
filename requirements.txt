@@ -11,3 +11,4 @@ alive-progress~=3.2.0
 openai~=1.70.0
 pyinstaller~=6.11.1
 google~=3.0.0
+
