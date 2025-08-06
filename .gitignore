@@ -7,7 +7,7 @@
 /package/
 /tests/
 /cb_release_note.spec
-cb_release_note
+cb_release_not
 /__pycache__/
 /.fleet/settings.json
 /Jira Tests.http
