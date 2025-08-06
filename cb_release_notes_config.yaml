@@ -134,10 +134,30 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
+  - name: couchbase-operator-table-format
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Kubernetes" 
+      AND fixVersion = {{release_number}} AND labels IN (releasenote) ORDER BY key ASC
+    fields:
+      - name: release_number
+        type: text
+        message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
+    template: couchbase-operator-table-format.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+
   - name: couchbase-operator
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Kubernetes" 
-      AND fixVersion = {{release_number}} AND labels IN (releasenote) AND status IN ("Resolved") ORDER BY key ASC
+      AND fixVersion = {{release_number}} AND labels IN (releasenote) ORDER BY key ASC
     fields:
       - name: release_number
         type: text
@@ -153,3 +173,4 @@ release_settings:
       name: chatgpt
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+

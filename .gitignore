@@ -1,5 +1,6 @@
 /tests/.pytest_cache/
 .passwords.yaml
+.saved_settings.db
 *.adoc
 /build/
 /dist/

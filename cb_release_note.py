@@ -71,7 +71,7 @@ def get_user_options(user_settings: dict, config: dict) -> dict:
         choices=release_sets,
         validate=lambda setting: len(setting) > 0,
         invalid_message="You must select a setting",
-        height=6,
+        height=10,
         qmark='',
         amark=''
     ).execute()
@@ -79,7 +79,7 @@ def get_user_options(user_settings: dict, config: dict) -> dict:
     user_settings.release_set = next(
         setting for setting in config['release_settings'] if setting['name'] == release_set)
 
-    conn = release_note_save_settings.load_database('saved_settings.db')
+    conn = release_note_save_settings.load_database('.saved_settings.db')
 
     if 'fields' in user_settings.release_set:
 
