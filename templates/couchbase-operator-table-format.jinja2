@@ -1,11 +1,8 @@
 [#release-{{ user_settings.fields.release_number | replace_dots('') }}]
-== Release {{ user_settings.fields.release_number }} ({{ user_settings.fields.release_date }})
-
-Couchbase Operator {{ user_settings.fields.release_number }} was released in {{ user_settings.fields.release_date }}.
-This maintenance release contains fixes to issues.
+== Release {{ user_settings.fields.release_number }}
 
 [#fixed-issues-v{{ user_settings.fields.release_number | replace_dots('') }}]
-== Fixed Issues
+=== Fixed Issues
 
 {% if issues | length > 0 %}
 
@@ -20,9 +17,9 @@ This maintenance release contains fixes to issues.
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 
 {% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-a| {{ issue.raw['fields']['customfield_11402'] | replace('{{', '`') | replace('}}','`') or '{empty}' }}
+a| *Summary:* {{ issue.raw['fields']['customfield_11402'] | replace('{{', '`') | replace('}}','`') or '{empty}' }}
 {% else %}
-a| {{ issue.fields.ai_summary or '{empty}'}}
+a| *Summary:* {{ issue.fields.ai_summary or '{empty}'}}
 {% endif %}
 {% endfor %}
 |===
