@@ -142,6 +142,9 @@ release_settings:
       - name: release_number
         type: text
         message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
