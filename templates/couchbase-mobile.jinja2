@@ -12,13 +12,13 @@ None for this release.
 
 {%- set component_map =
 {
-  'Android':['Java-Android', 'Kotlin', 'Kotlin-Android', 'LiteCore'],
-  'C':['C', 'LiteCore'],
-  '.NET':['.NET', 'LiteCore'],
-  'Java':['Java', 'Java-Android', 'Kotlin-Android'],
-  'Javascript':['Kotlin', 'LiteCore'],
-  'Objective-C':['IOS', 'LiteCore'],
-  'Swift':['IOS', 'LiteCore']
+  'Android':['Java-Android', 'Kotlin', 'Kotlin-Android', 'LiteCore', 'API'],
+  'C':['C', 'LiteCore', 'API'],
+  '.NET':['.NET', 'LiteCore','API'],
+  'Java':['Java', 'Java-Android', 'Kotlin-Android''API'],
+  'Javascript':['Kotlin', 'LiteCore','API'],
+  'Objective-C':['IOS', 'LiteCore','API'],
+  'Swift':['IOS','iOS', 'LiteCore', 'API']
 } -%}
 
 {% set filtered_issues = issues | filter_by_component(component_map[user_settings.fields['module']]) %}
@@ -36,6 +36,8 @@ None for this release.
 {% set known_issues = filtered_issues | selectattr('fields.labels', 'contains', 'known_issue')
 | rejectattr('fields.status.name', 'in','Resolved, Closed') | list %}
 
+{% set deprecations = filtered_issues | selectattr('fields.labels', 'contains', 'deprecated') | list %}
+
 [#maint-{{ user_settings.fields.release_number | replace_dots('-') }}]
 == {{ user_settings.fields.release_number }} -- {{ user_settings.fields.release_date }}
 
@@ -47,10 +49,17 @@ Version {{ user_settings.fields.release_number }} for {{user_settings.fields['mo
 
 === Issues and Resolutions
 
+==== Fixed issues
+
 {{ generate_issue_list(bugs, "Fixed", "Fixed") }}
 
 === Known Issues
 
 {{ generate_issue_list(known_issues, "Known Issues", "KI") }}
+
+=== Deprecations
+
+{{ generate_issue_list(deprecations, "Deprecations", "deprecations") }}
+
 
 

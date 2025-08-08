@@ -59,7 +59,12 @@ release_settings:
 
   - name: docs-server-table-format
     url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" AND fixVersion in (7.2.8) AND labels IN (releasenote)  AND summary !~ "System Test" AND "Release Notes Description[Paragraph]" IS NOT EMPTY AND reporter NOT IN (membersOf("couchbase-qe-team"))
+    jql: project = "Couchbase Server" 
+         AND fixVersion in (7.2.8) 
+         AND labels IN (releasenote)  
+         AND summary !~ "System Test" 
+         AND "Release Notes Description[Paragraph]" IS NOT EMPTY 
+         AND reporter NOT IN (membersOf("couchbase-qe-team"))
       ORDER BY key ASC
     fields:
       - name: release_date
@@ -82,9 +87,9 @@ release_settings:
 
   - name: couchbase-mobile
     url: https://jira.issues.couchbase.com
-    jql: project = CBL AND issuetype in (Bug, Improvement)
-      AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore)
-      AND (fixVersion = {{release_number}} OR labels IN (known_issue))
+    jql: project = CBL AND issuetype in (Bug, Improvement, Task)
+      AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore, API)
+      AND (fixVersion = {{release_number}} AND labels IN (releasenote,known_issue,deprecated))
       ORDER BY key ASC
     fields:
       - name: module

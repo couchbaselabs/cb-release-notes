@@ -1,5 +1,7 @@
 = Couchbase Release Notes Builder
 
+:experimental:
+
 == Introduction
 
 Creating release notes from Jira issues is pretty dull, AmIRight?
@@ -108,7 +110,7 @@ release_settings: #<.>
       - name: release_date
         type: text
         message: 'Enter the release date (Month Year):'
-    template: sync-gateway.jinja2
+    template: sync-gateway.jinja2 #<.>
 
 ----
 
@@ -171,6 +173,22 @@ Run it from the shell:
 
 And follow the instructions.
 
+[NOTE]
+.Running on Macs
+====
+You may run into difficulty running the application on Mac
+due to Apple's GateKeeper security setup.
+
+If you receive an error stating that the application is untrusted,
+then go to `System Settings` and click on the menu:Privacy & Security[] menu item.
+From there, go to menu:Security[Allow Applications from].
+Make sure that this is set to `App Store & Known Developers`.
+====
+
+
+
+
+
 Now copy the generated file to the `partials` directory of the module under release.
 Then `include::` the file at the top of the existing release note.
 
@@ -179,7 +197,8 @@ Then `include::` the file at the top of the existing release note.
 You will need a Python environment.
 The following should be a minimal way to build the script.
 
-```
+[source, shell]
+----
 brew install pyenv  # will install the whole world
 
 pyenv init
@@ -196,7 +215,7 @@ pip install -r requirements.txt
 # creates package/ and zips it up into package.zip
 
 ./package/cb-release-note
-```
+----
 
 TODO: document how to create a new Release on Github.
 
