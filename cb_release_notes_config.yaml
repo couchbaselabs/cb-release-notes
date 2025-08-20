@@ -60,10 +60,9 @@ release_settings:
   - name: docs-server-table-format
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
-         AND fixVersion in (7.2.8) 
-         AND labels IN (releasenote)  
+         AND fixVersion in ({{release_number}}) 
+         AND labels IN (releasenote, releasenotecomplete)  
          AND summary !~ "System Test" 
-         AND "Release Notes Description[Paragraph]" IS NOT EMPTY 
          AND reporter NOT IN (membersOf("couchbase-qe-team"))
       ORDER BY key ASC
     fields:

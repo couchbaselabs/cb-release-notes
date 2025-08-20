@@ -19,7 +19,7 @@ a| {{ issue.fields.ai_summary or '{empty}' }}
 {% endif %}
 
 {% else %}
-a| {{ issue.raw['fields']['customfield_11402'] | replace("|", "\|") | replace("{{", "`")  | replace("}}", "`")}}
+a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("}}", "`")}}
 
 {% endif %}
 | Issue resolved
@@ -44,7 +44,7 @@ a| {{ issue.raw['fields']['customfield_11402'] | replace("|", "\|") | replace("{
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 
 {% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-a| {{ issue.raw['fields']['customfield_11402'] | replace("|", "\|") | replace("{{", "`")  | replace("}}", "`")}}
+a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("}}", "`")}}
 {% else %}
 a| {{ issue.fields.ai_summary or '{empty}' }}
 
