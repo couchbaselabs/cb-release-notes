@@ -20,7 +20,7 @@ This maintenance release contains fixes to issues.
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 
 {% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-a| *Summary:* {{ issue.raw['fields']['customfield_11402'] | replace('{{', '`') | replace('}}','`') or '{empty}' }}
+a| *Summary:* {{ issue.raw['fields']['customfield_11402'] | replace('{{', '`') | replace('}}','`') | replace("\n\n", "\n") or '{empty}' }}
 {% else %}
 a| *Summary:* {{ issue.fields.ai_summary or '{empty}'}}
 {% endif %}
