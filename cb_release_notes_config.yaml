@@ -34,7 +34,7 @@ release_settings:
     jql: project = "Couchbase Server" 
       AND type IN (Bug, Improvement)
       AND fixVersion in ({{release_number}}) 
-      AND labels IN (releasenote, releasenotecomplete) 
+      AND labels IN (releasenote) 
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC
@@ -61,7 +61,7 @@ release_settings:
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
          AND fixVersion in ({{release_number}}) 
-         AND labels IN (releasenote, releasenotecomplete)  
+         AND labels IN (releasenote)  
          AND summary !~ "System Test" 
          AND reporter NOT IN (membersOf("couchbase-qe-team"))
       ORDER BY key ASC

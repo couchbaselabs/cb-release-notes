@@ -9,6 +9,12 @@
 |Issue | Description | Resolution
 
 {% for issue in filtered_issues %}
+{% if 'raw_note' in issue.fields['customfield_11288'][0] %}
+
+{{ issue.raw['fields']['customfield_11402'] | replace("\n\n", "\n") }}
+
+{% else %}
+
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 
 {% if not issue.fields['customfield_11402']  %}
@@ -19,10 +25,12 @@ a| {{ issue.fields.ai_summary or '{empty}' }}
 {% endif %}
 
 {% else %}
-a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") }}
+a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") | replace("|", "") }}
 
 {% endif %}
 | Issue resolved
+
+{%  endif %}
 
 {% endfor %}
 |===
@@ -40,11 +48,16 @@ a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("
 |Issue | Description | Resolution
 
 {% for issue in filtered_issues %}
+{% if 'raw_note' in issue.fields['customfield_11288'][0] %}
+
+{{ issue.raw['fields']['customfield_11402'] | replace("\n\n", "\n") }}
+
+{%  else %}
 
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 
 {% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n")}}
+a| {{ issue.raw['fields']['customfield_11402'] | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") | replace("|", "") }}
 {% else %}
 a| {{ issue.fields.ai_summary or '{empty}' }}
 
@@ -55,6 +68,9 @@ a| {{ issue.fields.ai_summary or '{empty}' }}
 {% endif %}
 
 | Issue resolved
+
+{%  endif %}
+
 {% endfor %}
 |===
 {% endif %}
