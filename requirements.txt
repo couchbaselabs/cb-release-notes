@@ -1,14 +1,15 @@
 copilot-api
-jira~=3.8.0
-click~=8.1.7
+jira~=3.10.5
+click~=8.2.1
 Jinja2~=3.1.6
 pyfiglet~=1.0.2
 PyYAML~=6.0.2
-jsonschema~=4.16.0
+jsonschema~=4.25.1
 inquirerpy~=0.3.4
-termcolor~=2.1.1
-alive-progress~=3.2.0
-openai~=1.70.0
-pyinstaller~=6.11.1
-google~=3.0.0
+termcolor~=3.1.0
+alive-progress~=3.3.0
+openai~=1.106.1
+pyinstaller~=6.15.0
+
+
 

@@ -10,13 +10,19 @@ jira_batch_size: 50
 
 release_settings:
 
-  - name: morpheus-breaking-changes
+  - name: docs-server-breaking-changes
     url: https://jira.issues.couchbase.com
-    jql: labels = breaking-change AND fixversion = Morpheus ORDER BY priority
+    jql: project = "Couchbase Server" 
+      AND fixVersion in ({{release_number}}) 
+      AND labels IN (breaking-change) 
+      ORDER BY key ASC
     fields:
       - name: release_date
         type: text
         message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
       - name: release_text
         type: text
         message: 'Enter the release number for the title line:'

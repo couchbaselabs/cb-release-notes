@@ -55,7 +55,7 @@ def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
     click.echo(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
 
-def get_user_options(user_settings: dict, config: dict) -> dict:
+def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
     user_settings.templates_directory = config['templates_directory']
 
     if "jira_batch_size" in config:
@@ -158,18 +158,20 @@ def get_password_set(password_file: str) -> dict:
     return password_config
 
 
-def get_login_details(password_file: str, url_str: str) -> str:
+def get_login_details(password_file: str, url_str: str) -> dict:
     login_details = get_password_set(password_file)
     return login_details['jira'][url_str]
 
 
-def get_jira_client(user_settings: dict) -> JIRA:
+def get_jira_client(user_settings: UserSettings) -> JIRA:
     login = get_login_details(user_settings.password_file, user_settings.release_set['url'])
-    jira = JIRA(basic_auth=(login['username'], login['token']), options={'server': user_settings.release_set['url']})
+    jira = JIRA(basic_auth=(login['username'], login['token']),
+                options={'server': user_settings.release_set['url']},
+                get_server_info=True)
     return jira
 
 
-def parse_search_str(user_settings: dict) -> str:
+def parse_search_str(user_settings: UserSettings) -> str:
     search_str = user_settings.release_set['jql']
     # Replace variables if you find any
     for user_variable in list(user_settings.fields.keys()):
@@ -178,8 +180,8 @@ def parse_search_str(user_settings: dict) -> str:
     return search_str
 
 
-def retrieve_issues(jira: JIRA, search_str: str, start_at: int, batch_size: int) -> dict:
-    issues = jira.search_issues(search_str, startAt=start_at, maxResults=batch_size)
+def retrieve_issues(jira: JIRA, search_str: str, page_token) -> dict:
+    issues = jira.enhanced_search_issues(search_str, page_token, maxResults=False)
     return issues
 
 def get_release_note_summary(ai_client, text_to_summarize) -> str:
@@ -193,7 +195,7 @@ def retrieve_comments(issue) -> str:
 
 
 def render_release_notes(user_settings, issue_list):
-    environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True)
+    environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True, lstrip_blocks=True)
 
     support_filters = {name: function for name, function in getmembers(release_note_filters) if isfunction(function)}
     environment.filters.update(support_filters)
@@ -205,9 +207,6 @@ def render_release_notes(user_settings, issue_list):
     support_tests = {name: function for name, function in getmembers(release_note_tests) if
                      isfunction(function)}
     environment.tests.update(support_tests)
-
-    environment.trim_blocks = True
-    environment.lstrip_blocks = True
 
     template = environment.get_template(user_settings.release_set['template'])
     content = template.render(user_settings=user_settings, issues=issue_list)
@@ -246,22 +245,27 @@ def main(ctx, config, output, summarize, version):
         jira = get_jira_client(settings)
 
         issue_list = []
-        list_position = 0
+
         search = parse_search_str(settings)
 
         with alive_bar(title='Retrieving jira tickets ...', manual=True, dual_line=True, ) as bar:
 
-            while True:
-                retrieved_issues = retrieve_issues(jira, search, list_position, settings.jira_batch_size)
-                if len(retrieved_issues) > 0:
-                    issue_list.extend(retrieved_issues)
-                    list_position += len(retrieved_issues)
-                    bar(len(issue_list) / retrieved_issues.total)
-                    bar.text(f'{len(issue_list)} retrieved ...')
-                else:
-                    break
+            page_token = None
 
-            bar.text(f'{len(issue_list)} retrieved ...')
+            while True:
+                issues = retrieve_issues(jira, search, page_token=page_token)
+
+                if len(issues) > 0:
+                    issue_list.extend(issues)
+
+                if hasattr(issues, "total") and len(issues) > 0:
+                    bar(len(issue_list) / issues.total)
+                    bar.text(f'{len(issue_list)} retrieved ...')
+
+                page_token = getattr(issues, "nextPageToken", None)
+
+                if not page_token:
+                    break
 
         if summarize:
 
@@ -292,8 +296,9 @@ def main(ctx, config, output, summarize, version):
                     bar.text(f'{index + 1} summarized ...')
 
         render_release_notes(settings, issue_list)
-        click.echo('Done!')
-        click.echo(f'Release notes written to {user_settings.output_file}')
+
+        click.echo(f'{len(issue_list)} tickets retrieved ...')
+        click.echo(f'Release notes written to ==> {user_settings.output_file}')
 
     except ValidationError as vE:
         click.echo(f'Error in configuration file ==> {vE.message}')
