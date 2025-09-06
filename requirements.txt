@@ -10,6 +10,7 @@ termcolor~=3.1.0
 alive-progress~=3.3.0
 openai~=1.106.1
 pyinstaller~=6.15.0
+google-genai~=1.33.0
 
 
 

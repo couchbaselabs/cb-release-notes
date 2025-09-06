@@ -20,7 +20,7 @@ import release_note_save_settings
 import release_note_tests
 from AI_Clients import ai_client_factory
 
-DEFAULT_JIRA_BATCH_SIZE = 100
+DEFAULT_JIRA_BATCH_SIZE = 10
 
 
 class UserSettings:
@@ -180,8 +180,8 @@ def parse_search_str(user_settings: UserSettings) -> str:
     return search_str
 
 
-def retrieve_issues(jira: JIRA, search_str: str, page_token) -> dict:
-    issues = jira.enhanced_search_issues(search_str, page_token, maxResults=False)
+def retrieve_issues(jira: JIRA, search_str: str, page_token, batch_size) -> dict:
+    issues = jira.enhanced_search_issues(jql_str=search_str, nextPageToken=page_token, maxResults=batch_size)
     return issues
 
 def get_release_note_summary(ai_client, text_to_summarize) -> str:
@@ -253,7 +253,7 @@ def main(ctx, config, output, summarize, version):
             page_token = None
 
             while True:
-                issues = retrieve_issues(jira, search, page_token=page_token)
+                issues = retrieve_issues(jira, search, page_token=page_token, batch_size=settings.jira_batch_size)
 
                 if len(issues) > 0:
                     issue_list.extend(issues)
