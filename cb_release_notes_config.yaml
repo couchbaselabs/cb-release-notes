@@ -41,6 +41,7 @@ release_settings:
       AND type IN (Bug, Improvement)
       AND fixVersion in ({{release_number}}) 
       AND labels IN (releasenote) 
+      AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC

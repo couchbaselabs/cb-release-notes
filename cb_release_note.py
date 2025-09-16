@@ -21,6 +21,7 @@ import release_note_tests
 from AI_Clients import ai_client_factory
 
 DEFAULT_JIRA_BATCH_SIZE = 10
+RELEASE_NOTE_JIRA_FIELD = 'customfield_11402'
 
 
 class UserSettings:
@@ -285,23 +286,25 @@ def main(ctx, config, output, summarize, version):
                 bar.text('summarizing ...')
 
                 for index, issue in enumerate(issue_list):
-                    issue_summary = retrieve_description(issue)
-                    issue_comments = retrieve_comments(issue)
-                    ai_summary = get_release_note_summary(ai_client=ai_client,
-                                                          text_to_summarize=issue_summary + issue_comments)
 
-                    issue.fields.ai_summary = ai_summary
-                    issue.fields.ai_service = user_settings.release_set['ai_service']
-                    bar((index + 1) / len(issue_list))
-                    bar.text(f'{index + 1} summarized ...')
+                    if not getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD):
+
+                        issue_summary = retrieve_description(issue)
+                        issue_comments = retrieve_comments(issue)
+                        ai_summary = get_release_note_summary(ai_client=ai_client,
+                                                              text_to_summarize=issue_summary + issue_comments)
+                        issue.fields.ai_summary = ai_summary
+                        issue.fields.ai_service = user_settings.release_set['ai_service']
+                        bar((index + 1) / len(issue_list))
+                        bar.text(f'{index + 1} ➞ {issue.key} summarized ...')
 
         render_release_notes(settings, issue_list)
 
         click.echo(f'{len(issue_list)} tickets retrieved ...')
-        click.echo(f'Release notes written to ==> {user_settings.output_file}')
+        click.echo(f'Release notes written to ➞ {user_settings.output_file}')
 
     except ValidationError as vE:
-        click.echo(f'Error in configuration file ==> {vE.message}')
+        click.echo(f'Error in configuration file ➞ {vE.message}')
 
 
 # Press the green button in the gutter to run the script.
