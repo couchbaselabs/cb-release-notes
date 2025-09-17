@@ -222,10 +222,16 @@ def render_release_notes(user_settings, issue_list):
 @click.option('--summarize', '--summarise',
               help='Add an OpenAI generated summary to notes without a release note description',
               is_flag=True, default=False)
+@click.option('--delete', help="Delete entries that don't have a release note description",
+              is_flag=True, default=False )
 @click.option('--version', is_flag=True)
 @click.pass_context
-def main(ctx, config, output, summarize, version):
+def main(ctx, config, output, summarize, delete, version):
     """Creates release notes from Couchbase Jiras."""
+
+    if delete and summarize:
+        raise click.UsageError('You cannot use --summarize and --delete together')
+
     try:
 
         configuration = load_config(config)
@@ -268,6 +274,13 @@ def main(ctx, config, output, summarize, version):
                 if not page_token:
                     break
 
+        if delete:
+
+            with alive_bar(title="Deleting entries without release notes description ...",
+                           manual=True, dual_line=True, ) as bar:
+
+                issue_list = [issue for issue in issue_list if getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD)]
+
         if summarize:
 
             password_config = get_password_set(user_settings.password_file)
@@ -305,7 +318,6 @@ def main(ctx, config, output, summarize, version):
 
     except ValidationError as vE:
         click.echo(f'Error in configuration file ➞ {vE.message}')
-
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
