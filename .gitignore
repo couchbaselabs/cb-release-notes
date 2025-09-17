@@ -13,3 +13,4 @@ cb_release_not
 /.fleet/settings.json
 /Jira Tests.http
 /cb-release-note.spec
+/cb_release_note
