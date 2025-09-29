@@ -2,13 +2,42 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "1.6"
+version: "1.7"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
 jira_batch_size: 50
 
 release_settings:
+
+  - name: docs-server-whats-new
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" 
+      AND type IN ("Improvement", "Technical Task", "New Feature", "Task")
+      AND fixVersion in ({{release_number}}) 
+      AND labels IN (releasenote) 
+      AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
+      AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
+      AND reporter not in (membersOf(couchbase-qe-team))
+      ORDER BY key ASC
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
+    template: couchbase-server-whats-new.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: docs-server-breaking-changes
     url: https://jira.issues.couchbase.com
@@ -29,7 +58,7 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
-    template: couchbase-morpheus-breaking-changes.jinja2
+    template: couchbase-server-breaking-changes.jinja2
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
@@ -58,7 +87,7 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
-    template: couchbase-docs-server.jinja2
+    template: couchbase-server.jinja2
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
@@ -85,7 +114,7 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
-    template: couchbase-docs-server-table-format.jinja2
+    template: couchbase-server-table-format.jinja2
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
