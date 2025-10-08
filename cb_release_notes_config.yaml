@@ -2,7 +2,7 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "1.7"
+version: "1.8"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
@@ -64,7 +64,35 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: docs-server
+  - name: docs-server-known-issues
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" 
+      AND status = Open 
+      AND affectedVersion IN ({{release_number}}) 
+      AND labels IN (releasenote)
+      AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
+      AND summary !~ "System Test" AND description !~ "System Test"  
+      ORDER BY key ASC
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
+    template: couchbase-server-known-issues.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+
+  - name: docs-server-fixes-and-improvements
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND type IN (Bug, Improvement)
@@ -87,7 +115,7 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
-    template: couchbase-server.jinja2
+    template: couchbase-server-bug-fixes.jinja2
     ai_service:
       name: chatgpt
       model: 'gpt-4o'

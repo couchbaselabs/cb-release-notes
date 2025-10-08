@@ -95,7 +95,7 @@ release_settings: #<.>
       - name: release_number
         type: text
         message: 'Enter the release number:'
-    template: couchbase-server.jinja2
+    template: couchbase-server-bug-fixes.jinja2
 
   - name: sync-gateway
     url: https://jira.issues.couchbase.com
