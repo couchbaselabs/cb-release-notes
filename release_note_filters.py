@@ -1,4 +1,6 @@
 # Support filters for the Jinja conversion.
+import re
+
 
 def filter_by_component(issues, selected_components):
     return [issue for issue in issues if
@@ -34,3 +36,11 @@ def filter_by_label(issues, selected_labels):
 
 def replace_dots(string_to_fix, char_to_replace):
     return string_to_fix.replace('.', char_to_replace)
+
+def convert_to_asciidoc_urls(string_to_fix):
+
+    pattern = r'\[(https?:\/\/.*[\r\n]*)\|(.*[\r\n]*)\]'
+    replacement = r'\1[\2]'
+    return re.sub(pattern, replacement, string_to_fix, flags=re.MULTILINE + re.IGNORECASE)
+
+
