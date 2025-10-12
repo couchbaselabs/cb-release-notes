@@ -18,7 +18,7 @@
 {% endif %}
 
 {% else %}
-{{ issue.raw['fields']['customfield_11402'] | convert_to_asciidoc_urls | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") }}
+{{ issue.raw['fields']['customfield_11402'] | convert_to_asciidoc_urls(user_settings.convert_urls) | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") }}
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -38,7 +38,7 @@
 *{{ url_with_jira(user_settings.release_set.url, issue.key) }}*::
 
 {% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-{{ issue.raw['fields']['customfield_11402'] | convert_to_asciidoc_urls | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") }}
+{{ issue.raw['fields']['customfield_11402'] | convert_to_asciidoc_urls(user_settings.convert_urls) | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n") }}
 {% else %}
 {{ issue.fields.ai_summary or '{empty}' }}
 

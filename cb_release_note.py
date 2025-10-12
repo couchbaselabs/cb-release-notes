@@ -224,9 +224,10 @@ def render_release_notes(user_settings, issue_list):
               is_flag=True, default=False)
 @click.option('--delete', help="Delete entries that don't have a release note description",
               is_flag=True, default=False )
+@click.option('--convert-urls', help='Convert JIRA URLs to Asciidoctor URLs', is_flag=True, default=False)
 @click.option('--version', is_flag=True)
 @click.pass_context
-def main(ctx, config, output, summarize, delete, version):
+def main(ctx, config, output, summarize, delete, convert_urls, version):
     """Creates release notes from Couchbase Jiras."""
 
     if delete and summarize:
@@ -310,6 +311,10 @@ def main(ctx, config, output, summarize, delete, version):
                         issue.fields.ai_service = user_settings.release_set['ai_service']
                         bar((index + 1) / len(issue_list))
                         bar.text(f'{index + 1} ➞ {issue.key} summarized ...')
+
+        if convert_urls:
+            user_settings.convert_urls = True
+            click.echo(f'Converting JIRA URLs to Asciidoctor URLs')
 
         render_release_notes(settings, issue_list)
 
