@@ -62,7 +62,7 @@
 Couchbase Server {{ user_settings.fields.release_text }} was released in {{ user_settings.fields.release_date }}.
 This maintenance release contains fixes to issues.
 
-{{- "[#dlist-fixed-issues-" ~ user_settings.fields.release_text | replace_dots('') ~ "]\n"}}
+{{ "[#dlist-fixed-issues-" ~ user_settings.fields.release_text | replace_dots('') ~ "]"}}
 == Fixed Issues
 
 {% include "docs-server-components.jinja2" %}
