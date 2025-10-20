@@ -4,7 +4,7 @@
 {%- if filtered_issues | length > 0 -%}
 
     {{- "[#dlist-known-issues-" ~ user_settings.fields.release_text | replace_dots('') ~ "-" ~ suffix ~ "]\n"}}
-    {{- "== " ~ title }}
+    {{- "=== " ~ title }}
 
     {% for issue in filtered_issues %}
 

@@ -95,7 +95,7 @@ release_settings:
   - name: docs-server-fixes-and-improvements
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
-      AND type IN (Epic, Bug, Improvement, "Technical Task")
+      AND type IN (Epic, Bug, Improvement, Task, "Technical Task")
       AND fixVersion in ({{release_number}}) 
       AND labels IN (releasenote) 
       AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
