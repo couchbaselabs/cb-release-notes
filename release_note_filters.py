@@ -40,8 +40,8 @@ def replace_dots(string_to_fix, char_to_replace):
 def convert_to_asciidoc_urls(string_to_fix, enable=False):
 
     if enable:
-        pattern = r'\[(https?:\/\/.*[\r\n]*)\|(.*[\r\n]*)\]'
-        replacement = r'\1[\2]'
+        pattern = r'\[(https?:\/\/.*[\r\n]*)\|(.*[\r\n]*)\]\[(.*)\]'
+        replacement = r'\1[\3]'
         return re.sub(pattern, replacement, string_to_fix, flags=re.MULTILINE + re.IGNORECASE)
     else:
         return string_to_fix
