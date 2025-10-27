@@ -28,13 +28,13 @@ class UserSettings:
     password_file = None
     templates_directory = None
     jira_batch_size = DEFAULT_JIRA_BATCH_SIZE
-    release_set = None
+    release_set = {}
     fields = {}
     output_file = None
-    ai_service = None
-    ai_api_key = None
-    ai_prompt = None
-    ai_model = None
+    ai_service = ""
+    ai_api_key = ""
+    ai_prompt = ""
+    ai_model = ""
 
     def __str__(self) -> str:
         return f'settings = {self.release_set}; \
@@ -225,9 +225,10 @@ def render_release_notes(user_settings, issue_list):
 @click.option('--delete', help="Delete entries that don't have a release note description",
               is_flag=True, default=False )
 @click.option('--convert-urls', help='Convert JIRA URLs to Asciidoctor URLs', is_flag=True, default=False)
+@click.option('--global_ai', help='Use the global AI service', is_flag=True, default=False)
 @click.option('--version', is_flag=True)
 @click.pass_context
-def main(ctx, config, output, summarize, delete, convert_urls, version):
+def main(ctx, config, output, summarize, delete, convert_urls, global_ai, version):
     """Creates release notes from Couchbase Jiras."""
 
     if delete and summarize:
@@ -236,6 +237,17 @@ def main(ctx, config, output, summarize, delete, convert_urls, version):
     try:
 
         configuration = load_config(config)
+
+        if global_ai:
+            # Make sure you have the parameters defined in the config file
+            if 'global_ai_service' not in configuration:
+                raise click.UsageError('You must define a global ai service in the configuration file')
+
+            if 'global_ai_model' not in configuration:
+                raise click.UsageError('You must define a global ai model in the configuration file')
+
+            if 'global_ai_prompt' not in configuration:
+                raise click.UsageError('You must define a global ai prompt in the configuration file')
 
         user_settings = UserSettings()
 
@@ -286,15 +298,23 @@ def main(ctx, config, output, summarize, delete, convert_urls, version):
 
             password_config = get_password_set(user_settings.password_file)
 
-            if user_settings.release_set['ai_service'] is not None:
-                ai_password_config = password_config['ai'][user_settings.release_set['ai_service']['name']]
+            if global_ai:
+                ai_password_config = password_config['ai'][configuration['global_ai_service']]
+                ai_client = ai_client_factory(ai_key=ai_password_config['api_key'],
+                                              ai_service=configuration['global_ai_service'],
+                                              ai_model=configuration['global_ai_model'],
+                                              ai_prompt=configuration['global_ai_prompt'])
             else:
-                raise Exception('No AI service configured')
+                ai_password_config = password_config['ai'][user_settings.release_set['ai_service']['name']]
+                ai_client = ai_client_factory(ai_key=ai_password_config['api_key'],
+                                              ai_service=user_settings.release_set['ai_service']['name'],
+                                              ai_model=user_settings.release_set['ai_service']['model'],
+                                              ai_prompt=user_settings.release_set['ai_service']['prompt'])
 
-            ai_client = ai_client_factory(ai_password_config['api_key'],
-                                          user_settings.release_set['ai_service'])
+            if ai_client is None:
+                raise click.UsageError('You must define a valid AI service.')
 
-            with alive_bar(title=f"[{user_settings.release_set['ai_service']['prompt']}] ...",
+            with alive_bar(title=f"[{ai_client.ai_prompt}] ...",
                            manual=True, dual_line=True, ) as bar:
 
                 bar.text('summarizing ...')

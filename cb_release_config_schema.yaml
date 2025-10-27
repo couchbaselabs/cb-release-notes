@@ -10,6 +10,12 @@ properties:
     maximum: 900
   templates_directory:
     type: string
+  global_ai_service:
+    type: string
+  global_ai_model:
+    type: string
+  global_ai_prompt:
+    type: string
   release_settings:
     type: array
     items:

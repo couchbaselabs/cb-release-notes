@@ -8,6 +8,10 @@ password_file: ./.passwords.yaml
 templates_directory: ./templates
 jira_batch_size: 50
 
+global_ai_service: chatgpt
+global_ai_model: 'gpt-4o'
+global_ai_prompt: 'Use ventilated prose to summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+
 release_settings:
 
   - name: docs-server-whats-new

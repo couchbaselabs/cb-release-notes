@@ -35,19 +35,20 @@ class OpenAIClient(AIClient):
 
         return response.output_text
 
-def ai_client_factory(ai_key: str, ai_service: dict) -> AIClient:
+def ai_client_factory(ai_key: str, ai_service: str, ai_model: str, ai_prompt: str) -> AIClient | None:
+
     ai_client = None
 
-    if ai_service['name'] == 'chatgpt':
+    if ai_service == 'chatgpt':
         ai_concrete_client = OpenAI(api_key=ai_key)
         ai_client = OpenAIClient(ai_concrete_client,
-                             ai_model=ai_service['model'],
-                             ai_prompt=ai_service['prompt'])
+                             ai_model=ai_model,
+                             ai_prompt=ai_prompt)
 
-    if ai_service['name'] == 'gemini':
+    if ai_service == 'gemini':
         ai_concrete_client = genai.Client(api_key=ai_key)
         ai_client = GeminiClient(ai_concrete_client,
-                                 ai_model=ai_service['model'],
-                                 ai_prompt=ai_service['prompt'])
+                                 ai_model=ai_model,
+                                 ai_prompt=ai_prompt)
 
     return ai_client
