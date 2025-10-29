@@ -2,7 +2,7 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "1.8"
+version: "1.9"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
