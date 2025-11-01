@@ -1,15 +1,15 @@
-{{ generate_issue_table(issues, 'Installer', ['installer'], 'installation') }}
-{{ generate_issue_table(issues, 'Cluster Manager', ['ns_server'], 'cluster-manager') }}
-{{ generate_issue_table(issues, 'Data Service', ['memcached', 'data-service', 'storage-engine', 'couchbase-bucket'], 'data-service') }}
-{{ generate_issue_table(issues, 'Views', ['view-engine', 'UI'], 'views') }}
-{{ generate_issue_table(issues, 'XDCR', ['XDCR'], 'xdcr') }}
-{{ generate_issue_table(issues, 'Query Service', ['query'], 'query-service') }}
-{{ generate_issue_table(issues, 'Eventing Service', ['eventing'], 'eventing-service') }}
-{{ generate_issue_table(issues, 'Analytics Service', ['analytics'], 'analytics-service') }}
-{{ generate_issue_table(issues, 'Index Service', ['secondary-index'], 'index-service') }}
-{{ generate_issue_table(issues, 'Search Service', ['fts'], 'search-service') }}
-{{ generate_issue_table(issues, 'Tools', ['tools', 'build'], 'tools') }}
-{{ generate_uncategorized_issue_table(issues, 'Uncategorized',['installer', 'ns_server',
+{{ generate_issue_table(issues | filter_by_component(['installer']), 'Installer', 'installation') }}
+{{ generate_issue_table(issues | filter_by_component(['ns_server']), 'Cluster Manager', 'cluster-manager') }}
+{{ generate_issue_table(issues | filter_by_component(['memcached', 'data-service', 'storage-engine', 'couchbase-bucket']), 'Data Service', 'data-service') }}
+{{ generate_issue_table(issues | filter_by_component(['view-engine', 'UI']), 'Views','views') }}
+{{ generate_issue_table(issues | filter_by_component(['XDCR']), 'XDCR', 'xdcr') }}
+{{ generate_issue_table(issues | filter_by_component(['query']), 'Query Service', 'query-service') }}
+{{ generate_issue_table(issues | filter_by_component(['eventing']), 'Eventing Service', 'eventing-service') }}
+{{ generate_issue_table(issues | filter_by_component(['analytics']), 'Analytics Service', 'analytics-service') }}
+{{ generate_issue_table(issues | filter_by_component(['secondary-index']), 'Index Service', 'index-service') }}
+{{ generate_issue_table(issues | filter_by_component(['fts']), 'Search Service', 'search-service') }}
+{{ generate_issue_table(issues | filter_by_component(['tools', 'build']), 'Tools', 'tools') }}
+{{ generate_issue_table(issues | filter_out_by_component(['installer', 'ns_server',
 'storage-engine', 'couchbase-bucket', 'memcached', 'XDCR', 'query', 'eventing',
 'tools','analytics', 'secondary-index', 'UI', 'build',
-'fts', 'tools', 'data-service' ],'uncategorized') }}
+'fts', 'tools', 'data-service' ]), 'Uncategorized','uncategorized') }}
