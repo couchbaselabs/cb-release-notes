@@ -2,7 +2,7 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "1.9"
+version: "2.0"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
@@ -14,7 +14,7 @@ global_ai_prompt: 'Use ventilated prose to summarise the following as a short re
 
 release_settings:
 
-  - name: docs-server-whats-new
+  - name: "What's New (Server)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND type IN ("Improvement", "Technical Task", "New Feature", "Task")
@@ -43,7 +43,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: docs-server-breaking-changes
+  - name: "Breaking changes (Server)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND fixVersion in ({{release_number}}) 
@@ -68,7 +68,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: docs-server-known-issues
+  - name: "Known issues (Server)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND status = Open 
@@ -96,7 +96,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: docs-server-fixes-and-improvements
+  - name: "Fixes and enhancements (Server 8.0+)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND type IN (Epic, Bug, Improvement, Task, "Technical Task")
@@ -125,7 +125,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: docs-server-table-format
+  - name: "Fixes and enhancements (Server 7.0+)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
          AND fixVersion in ({{release_number}}) 
@@ -152,7 +152,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: couchbase-mobile
+  - name: "Couchbase Mobile"
     url: https://jira.issues.couchbase.com
     jql: project = CBL AND issuetype in (Bug, Improvement, Task)
       AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore, API)
@@ -185,7 +185,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: sync-gateway
+  - name: "Sync Gateway"
     url: https://jira.issues.couchbase.com
     jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
       AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
@@ -206,7 +206,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: couchbase-operator-table-format
+  - name: "Couchbase Operator (table format)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Kubernetes" 
       AND fixVersion = {{release_number}} 
@@ -228,7 +228,7 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: couchbase-operator
+  - name: "Couchbase Operator"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Kubernetes" 
       AND fixVersion = {{release_number}} 

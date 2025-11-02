@@ -56,7 +56,29 @@ def show_banner(version_number):
     os.system('cls' if os.name == 'nt' else 'clear')
     click.echo(colored(pyfiglet.figlet_format(f'CB Release Notes\nversion {version_number}'), 'green'))
 
+
+def validate_unique_names(config):
+    """Validate that release_settings have unique names."""
+    release_settings = config.get('release_settings', [])
+    names = [setting['name'] for setting in release_settings]
+
+    if len(names) != len(set(names)):
+        # Find duplicates
+        seen = set()
+        duplicates = []
+        for name in names:
+            if name in seen:
+                duplicates.append(name)
+            seen.add(name)
+
+        raise ValidationError(f"Duplicate release names found: {duplicates}")
+
+    return True
+
 def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
+
+    validate_unique_names(config)
+
     user_settings.templates_directory = config['templates_directory']
 
     if "jira_batch_size" in config:
@@ -290,7 +312,7 @@ def main(ctx, config, output, summarize, delete, convert_urls, global_ai, versio
         if delete:
 
             with alive_bar(title="Deleting entries without release notes description ...",
-                           manual=True, dual_line=True, ) as bar:
+                           manual=True, dual_line=True, ):
 
                 issue_list = [issue for issue in issue_list if getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD)]
 
