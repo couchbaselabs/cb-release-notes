@@ -246,11 +246,11 @@ def render_release_notes(user_settings, issue_list):
               is_flag=True, default=False)
 @click.option('--delete', help="Delete entries that don't have a release note description",
               is_flag=True, default=False )
-@click.option('--convert-urls', help='Convert JIRA URLs to Asciidoctor URLs', is_flag=True, default=False)
+@click.option('--disable-urls', help='Convert JIRA URLs to Asciidoctor URLs', is_flag=True, default=False)
 @click.option('--global_ai', help='Use the global AI service', is_flag=True, default=False)
 @click.option('--version', is_flag=True)
 @click.pass_context
-def main(ctx, config, output, summarize, delete, convert_urls, global_ai, version):
+def main(ctx, config, output, summarize, delete, disable_urls, global_ai, version):
     """Creates release notes from Couchbase Jiras."""
 
     if delete and summarize:
@@ -352,19 +352,19 @@ def main(ctx, config, output, summarize, delete, convert_urls, global_ai, versio
                         issue.fields.ai_summary = ai_summary
                         issue.fields.ai_service = user_settings.release_set['ai_service']
                         bar((index + 1) / len(issue_list))
-                        bar.text(f'{index + 1} ➞ {issue.key} summarized ...')
+                        bar.text(f'{index + 1} ⟹ {issue.key} summarized ...')
 
-        if convert_urls:
-            user_settings.convert_urls = True
-            click.echo(f'Converting JIRA URLs to Asciidoctor URLs')
+        if disable_urls:
+            user_settings.disable_urls = True
+            click.echo(f'Disabling JIRA URLs ⟹ Asciidoctor URLs')
 
         render_release_notes(settings, issue_list)
 
         click.echo(f'{len(issue_list)} tickets retrieved ...')
-        click.echo(f'Release notes written to ➞ {user_settings.output_file}')
+        click.echo(f'Release notes written to ⟹ {user_settings.output_file}')
 
     except ValidationError as vE:
-        click.echo(f'Error in configuration file ➞ {vE.message}')
+        click.echo(f'Error in configuration file ⟹ {vE.message}')
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

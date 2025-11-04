@@ -18,7 +18,11 @@
             {% endif %}
 
         {% else %}
-            {{- issue.raw['fields']['customfield_11402'] | convert_to_asciidoc_urls | replace("{{", "`")  | replace("}}", "`") | replace("\n\n", "\n")  }}
+            {{- issue.raw['fields']['customfield_11402']
+            | convert_to_asciidoc_urls
+            | replace("{{", "`")
+            | replace("}}", "`")
+            | replace("\n\n", "\n")  }}
         {% endif %}
 
    {% endfor %}

@@ -37,13 +37,11 @@ def filter_by_label(issues, selected_labels):
 def replace_dots(string_to_fix, char_to_replace):
     return string_to_fix.replace('.', char_to_replace)
 
-def convert_to_asciidoc_urls(string_to_fix, enable=False):
 
-    if enable:
+def convert_to_asciidoc_urls(string_to_fix, disable=False):
+    if disable:
+        return string_to_fix
+    else:
         pattern = r'\[(https?:\/\/.*[\r\n]*)\|(.*[\r\n]*)\]\[(.*)\]'
         replacement = r'\1[\3]'
         return re.sub(pattern, replacement, string_to_fix, flags=re.MULTILINE + re.IGNORECASE)
-    else:
-        return string_to_fix
-
-

@@ -19,10 +19,10 @@
 
     {% else %}
         {{- issue.raw['fields']['customfield_11402']
-        | convert_to_asciidoc_urls(user_settings.convert_urls)
+        | convert_to_asciidoc_urls(user_settings.disable_urls)
         | replace("{{", "`")  | replace("}}", "`")
         | replace("\n\n", "\n")
-        | replace(". ", ". \n")
+        | replace(". ", ".\n")
         }}
     {% endif %}
 {% endfor %}
