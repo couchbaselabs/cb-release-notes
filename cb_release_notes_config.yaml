@@ -2,19 +2,28 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "2.1"
+version: "2.2"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
 jira_batch_size: 50
 
-global_ai_service: chatgpt
-global_ai_model: 'gpt-4o'
-global_ai_prompt: 'Use ventilated prose to summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
-
 release_settings:
 
   - name: "What's New (Server)"
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND type IN ("Improvement", "Technical Task", "New Feature", "Task")
@@ -24,19 +33,6 @@ release_settings:
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC
-    fields:
-      - name: release_date
-        type: text
-        message: 'Enter the release date (Month Year):'
-      - name: release_number
-        type: text
-        message: 'Enter the release label:'
-      - name: release_text
-        type: text
-        message: 'Enter the release number for the title line:'
-      - name: file_path
-        type: file
-        message: 'Enter the file path for the release notes:'
     template: couchbase-server-whats-new.jinja2
     ai_service:
       name: chatgpt
@@ -44,11 +40,6 @@ release_settings:
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Breaking changes (Server)"
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" 
-      AND fixVersion in ({{release_number}}) 
-      AND labels IN (breaking-change) 
-      ORDER BY key ASC
     fields:
       - name: release_date
         type: text
@@ -62,6 +53,11 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" 
+      AND fixVersion in ({{release_number}}) 
+      AND labels IN (breaking-change) 
+      ORDER BY key ASC
     template: couchbase-server-breaking-changes.jinja2
     ai_service:
       name: chatgpt
@@ -69,6 +65,19 @@ release_settings:
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Known issues (Server)"
+    fields:
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: release_number
+        type: text
+        message: 'Enter the release label:'
+      - name: release_text
+        type: text
+        message: 'Enter the release number for the title line:'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND status = Open 
@@ -77,6 +86,13 @@ release_settings:
       AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
       AND summary !~ "System Test" AND description !~ "System Test"  
       ORDER BY key ASC
+    template: couchbase-server-known-issues.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+
+  - name: "Fixes and enhancements (Server 8.0+)"
     fields:
       - name: release_date
         type: text
@@ -90,13 +106,6 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
-    template: couchbase-server-known-issues.jinja2
-    ai_service:
-      name: chatgpt
-      model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
-
-  - name: "Fixes and enhancements (Server 8.0+)"
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
       AND type IN (Epic, Bug, Improvement, Task, "Technical Task")
@@ -106,19 +115,7 @@ release_settings:
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC
-    fields:
-      - name: release_date
-        type: text
-        message: 'Enter the release date (Month Year):'
-      - name: release_number
-        type: text
-        message: 'Enter the release label:'
-      - name: release_text
-        type: text
-        message: 'Enter the release number for the title line:'
-      - name: file_path
-        type: file
-        message: 'Enter the file path for the release notes:'
+
     template: couchbase-server-bug-fixes.jinja2
     ai_service:
       name: chatgpt
@@ -126,13 +123,6 @@ release_settings:
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Fixes and enhancements (Server 7.0+)"
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Server" 
-         AND fixVersion in ({{release_number}}) 
-         AND labels IN (releasenote,releasenotecomplete)  
-         AND summary !~ "System Test" 
-         AND reporter NOT IN (membersOf("couchbase-qe-team"))
-      ORDER BY key ASC
     fields:
       - name: release_date
         type: text
@@ -146,6 +136,13 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Server" 
+         AND fixVersion in ({{release_number}}) 
+         AND labels IN (releasenote,releasenotecomplete)  
+         AND summary !~ "System Test" 
+         AND reporter NOT IN (membersOf("couchbase-qe-team"))
+      ORDER BY key ASC
     template: couchbase-server-table-format.jinja2
     ai_service:
       name: chatgpt
@@ -153,11 +150,6 @@ release_settings:
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Couchbase Mobile"
-    url: https://jira.issues.couchbase.com
-    jql: project = CBL AND issuetype in (Bug, Improvement, Task)
-      AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore, API)
-      AND (fixVersion = {{release_number}} AND labels IN (releasenote,known_issue,deprecated,releasenotecomplete))
-      ORDER BY key ASC
     fields:
       - name: module
         type: choice
@@ -179,6 +171,11 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = CBL AND issuetype in (Bug, Improvement, Task)
+      AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore, API)
+      AND (fixVersion = {{release_number}} AND labels IN (releasenote,known_issue,deprecated,releasenotecomplete))
+      ORDER BY key ASC
     template: couchbase-mobile.jinja2
     ai_service:
       name: chatgpt
@@ -186,10 +183,6 @@ release_settings:
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Sync Gateway"
-    url: https://jira.issues.couchbase.com
-    jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
-      AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
-      ORDER BY key ASC
     fields:
       - name: release_number
         type: text
@@ -200,6 +193,10 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
+      AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
+      ORDER BY key ASC
     template: sync-gateway.jinja2
     ai_service:
       name: chatgpt
@@ -229,11 +226,6 @@ release_settings:
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Couchbase Operator"
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Kubernetes" 
-      AND fixVersion = {{release_number}} 
-      AND labels IN (releasenote,releasenotecomplete) 
-      ORDER BY key ASC
     fields:
       - name: release_number
         type: text
@@ -244,6 +236,11 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Kubernetes" 
+      AND fixVersion = {{release_number}} 
+      AND labels IN (releasenote,releasenotecomplete) 
+      ORDER BY key ASC
     template: couchbase-operator.jinja2
     ai_service:
       name: chatgpt

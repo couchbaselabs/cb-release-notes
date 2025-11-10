@@ -10,12 +10,6 @@ properties:
     maximum: 900
   templates_directory:
     type: string
-  global_ai_service:
-    type: string
-  global_ai_model:
-    type: string
-  global_ai_prompt:
-    type: string
   release_settings:
     type: array
     items:
@@ -31,12 +25,6 @@ $defs:
     properties:
       name:
         type: string
-      url:
-        type: string
-        format: uri
-        pattern: '^https?://'
-      jql:
-        type: string
       fields:
         type: array
         items:
@@ -46,6 +34,12 @@ $defs:
           properties:
             type:
               const: file
+      url:
+        type: string
+        format: uri
+        pattern: '^https?://'
+      jql:
+        type: string
       template:
         type: string
       ai_service:
