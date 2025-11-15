@@ -10,6 +10,27 @@ jira_batch_size: 50
 
 release_settings:
 
+  - name: "Sync Gateway"
+    fields:
+      - name: release_number
+        type: text
+        message: 'Enter the release number:'
+      - name: release_date
+        type: text
+        message: 'Enter the release date (Month Year):'
+      - name: file_path
+        type: file
+        message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = CBG AND issuetype in (Bug, "New Feature", Improvement) 
+      AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
+      ORDER BY key ASC
+    template: sync-gateway.jinja2
+    ai_service:
+      name: chatgpt
+      model: 'gpt-4o'
+      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+
   - name: "What's New (Server)"
     fields:
       - name: release_date
@@ -147,7 +168,9 @@ release_settings:
     ai_service:
       name: chatgpt
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      prompt: 'Summarise the following as a short release note with no version numbers, 
+      no headings, no links, no identifying names or email addresses, 
+      and no more than 8 sentences'
 
   - name: "Couchbase Mobile"
     fields:
@@ -182,26 +205,6 @@ release_settings:
       model: 'gpt-4o'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
-  - name: "Sync Gateway"
-    fields:
-      - name: release_number
-        type: text
-        message: 'Enter the release number:'
-      - name: release_date
-        type: text
-        message: 'Enter the release date (Month Year):'
-      - name: file_path
-        type: file
-        message: 'Enter the file path for the release notes:'
-    url: https://jira.issues.couchbase.com
-    jql: project = CBG AND issuetype in (Bug, "New Feature", Epic, Improvement) 
-      AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
-      ORDER BY key ASC
-    template: sync-gateway.jinja2
-    ai_service:
-      name: chatgpt
-      model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Couchbase Operator (table format)"
     url: https://jira.issues.couchbase.com

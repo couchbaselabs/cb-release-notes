@@ -1,5 +1,4 @@
-{%- macro generate_issue_table(issues, title, components, suffix) %}
-{% set filtered_issues = issues | filter_by_component(components) %}
+{%- macro generate_issue_table(filtered_issues, title, suffix) %}
 
 {%- if filtered_issues | length > 0 -%}
 
@@ -22,8 +21,7 @@
             {{- issue.raw['fields']['customfield_11402']
             | convert_to_asciidoc_urls(user_settings.disable_urls)
             | replace("{{", "`")  | replace("}}", "`")
-            | replace(". ", ".\n")
-            | replace("\n\n", "\n")  }}
+            | replace(". ", ".\n") }}
         {% endif %}
 
    {% endfor %}

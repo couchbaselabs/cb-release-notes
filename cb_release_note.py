@@ -324,7 +324,7 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
 
                 for index, issue in enumerate(issue_list):
 
-                    if not getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD):
+                    if not getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD, None):
 
                         issue_summary = retrieve_description(issue)
                         issue_comments = retrieve_comments(issue)
