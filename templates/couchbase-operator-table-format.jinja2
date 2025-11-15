@@ -19,8 +19,9 @@ This maintenance release contains fixes to issues.
 
 | {{ url_with_jira(user_settings.release_set.url, issue.key) }}
 
-{% if issue.fields['customfield_11402'] is not none and issue.fields['customfield_11402'] | length > 0 %}
-    {{- "a| *Summary:* " ~  issue.raw['fields']['customfield_11402']
+{% if issue.fields[user_settings.release_set.release_note_field] is not none
+     and issue.fields[user_settings.release_set.release_note_field] | length > 0 %}
+    {{- "a| *Summary:* " ~  issue.raw['fields'][user_settings.release_set.release_note_field]
     | convert_to_asciidoc_urls(user_settings.disable_urls)
     | replace('{{', '`')
     | replace('}}','`')

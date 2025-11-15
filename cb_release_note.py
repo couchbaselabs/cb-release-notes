@@ -18,7 +18,7 @@ import release_note_filters
 import release_note_functions
 import release_note_save_settings
 import release_note_tests
-from AI_Clients import ai_client_factory
+from AI_Client_Factory import ai_client_factory
 
 DEFAULT_JIRA_BATCH_SIZE = 10
 RELEASE_NOTE_JIRA_FIELD = 'customfield_11402'
@@ -302,7 +302,8 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
             with alive_bar(title="Deleting entries without release notes description ...",
                            manual=True, dual_line=True, ):
 
-                issue_list = [issue for issue in issue_list if getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD)]
+                issue_list = [issue for issue in issue_list
+                              if getattr(issue.fields, user_settings.release_set['release_note_field'],None)]
 
         if summarize:
 
@@ -324,7 +325,7 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
 
                 for index, issue in enumerate(issue_list):
 
-                    if not getattr(issue.fields, RELEASE_NOTE_JIRA_FIELD, None):
+                    if not getattr(issue.fields, user_settings.release_set['release_note_field'], None):
 
                         issue_summary = retrieve_description(issue)
                         issue_comments = retrieve_comments(issue)

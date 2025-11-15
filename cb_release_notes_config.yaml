@@ -2,7 +2,7 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "2.2"
+version: "2.3.0"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
@@ -25,6 +25,7 @@ release_settings:
     jql: project = CBG AND issuetype in (Bug, "New Feature", Improvement) 
       AND (fixVersion = {{release_number}} OR labels IN (known_issue)) 
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: sync-gateway.jinja2
     ai_service:
       name: chatgpt
@@ -54,6 +55,7 @@ release_settings:
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-server-whats-new.jinja2
     ai_service:
       name: chatgpt
@@ -79,6 +81,7 @@ release_settings:
       AND fixVersion in ({{release_number}}) 
       AND labels IN (breaking-change) 
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-server-breaking-changes.jinja2
     ai_service:
       name: chatgpt
@@ -107,6 +110,7 @@ release_settings:
       AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
       AND summary !~ "System Test" AND description !~ "System Test"  
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-server-known-issues.jinja2
     ai_service:
       name: chatgpt
@@ -136,7 +140,7 @@ release_settings:
       AND summary !~ "System Test" AND resolution not in (Declined, "Won't Fix") 
       AND reporter not in (membersOf(couchbase-qe-team))
       ORDER BY key ASC
-
+    release_note_field: 'customfield_11402'
     template: couchbase-server-bug-fixes.jinja2
     ai_service:
       name: chatgpt
@@ -164,6 +168,7 @@ release_settings:
          AND summary !~ "System Test" 
          AND reporter NOT IN (membersOf("couchbase-qe-team"))
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-server-table-format.jinja2
     ai_service:
       name: chatgpt
@@ -199,6 +204,7 @@ release_settings:
       AND Component in (.NET, C, IOS, Java, Java-Android, Kotlin, Kotlin-Android, LiteCore, API)
       AND (fixVersion = {{release_number}} AND labels IN (releasenote,known_issue,deprecated,releasenotecomplete))
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-mobile.jinja2
     ai_service:
       name: chatgpt
@@ -207,11 +213,6 @@ release_settings:
 
 
   - name: "Couchbase Operator (table format)"
-    url: https://jira.issues.couchbase.com
-    jql: project = "Couchbase Kubernetes" 
-      AND fixVersion = {{release_number}} 
-      AND labels IN (releasenote,releasenotecomplete) 
-      ORDER BY key ASC
     fields:
       - name: release_number
         type: text
@@ -222,6 +223,12 @@ release_settings:
       - name: file_path
         type: file
         message: 'Enter the file path for the release notes:'
+    url: https://jira.issues.couchbase.com
+    jql: project = "Couchbase Kubernetes" 
+      AND fixVersion = {{release_number}} 
+      AND labels IN (releasenote,releasenotecomplete) 
+      ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-operator-table-format.jinja2
     ai_service:
       name: chatgpt
@@ -244,6 +251,7 @@ release_settings:
       AND fixVersion = {{release_number}} 
       AND labels IN (releasenote,releasenotecomplete) 
       ORDER BY key ASC
+    release_note_field: 'customfield_11402'
     template: couchbase-operator.jinja2
     ai_service:
       name: chatgpt

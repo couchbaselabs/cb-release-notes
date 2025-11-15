@@ -13,7 +13,7 @@
     {% for issue in filtered_issues %}
         {% if 'raw_note' in issue.fields['customfield_11288'][0] %}
 
-            {{- issue.raw['fields']['customfield_11402']
+            {{- issue.raw['fields'][user_settings.release_set.release_note_field]
             | convert_to_asciidoc_urls(user_settings.disable_urls)
             | replace(". ", ".\n")
             | replace("\n\n", "\n") }}
@@ -22,7 +22,7 @@
 
             {{- "|" ~url_with_jira(user_settings.release_set.url, issue.key) }}
 
-            {% if not issue.fields['customfield_11402']  %}
+            {% if not issue.fields[user_settings.release_set.release_note_field]  %}
                 {{- "a|" ~ issue.fields.ai_summary
                 | replace(". ", ".\n") or '{empty}' }}
 
@@ -31,7 +31,7 @@
             {% endif %}
 
            {% else %}
-                {{- "a|" ~ issue.raw['fields']['customfield_11402']
+                {{- "a|" ~ issue.raw['fields'][user_settings.release_set.release_note_field]
                 | convert_to_asciidoc_urls(user_settings.disable_urls)
                 | replace("{{", "`")  | replace("}}", "`")
                 | replace(". ", ".\n")

@@ -9,7 +9,7 @@
 
         {{- "*" ~ url_with_jira(user_settings.release_set.url, issue.key) ~ "*::"}}
 
-        {% if not issue.fields['customfield_11402']  %}
+        {% if not issue.fields[user_settings.release_set.release_note_field]  %}
             {{- issue.fields.ai_summary  | replace(", ", ",\n")
             | replace(". ", ".\n") or '{empty}' -}}
 
@@ -18,7 +18,7 @@
             {% endif %}
 
         {% else %}
-            {{- issue.raw['fields']['customfield_11402']
+            {{- issue.raw['fields'][user_settings.release_set.release_note_field]
             | convert_to_asciidoc_urls(user_settings.disable_urls)
             | replace("{{", "`")  | replace("}}", "`")
             | replace(". ", ".\n") }}

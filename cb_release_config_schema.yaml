@@ -40,6 +40,8 @@ $defs:
         pattern: '^https?://'
       jql:
         type: string
+      release_note_field:
+        type: string
       template:
         type: string
       ai_service:
@@ -50,6 +52,7 @@ $defs:
       - name
       - url
       - jql
+      - release_note_field
       - template
   fieldSettings:
     properties:

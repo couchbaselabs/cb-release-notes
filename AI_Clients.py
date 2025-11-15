@@ -43,12 +43,3 @@ class OpenAIClient(AIClient):
 
         return response.output_text
 
-def ai_client_factory(ai_key: str, ai_service: str, ai_model: str, ai_prompt: str) -> AIClient | None:
-
-    ai_factory =  {
-        'chatgpt': OpenAIClient,
-        'gemini': GeminiClient
-    }
-
-    ai_client = ai_factory[ai_service](ai_key, ai_model, ai_prompt)
-    return ai_client
