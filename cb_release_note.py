@@ -18,7 +18,8 @@ import release_note_filters
 import release_note_functions
 import release_note_save_settings
 import release_note_tests
-from AI_Client_Factory import ai_client_factory
+
+from any_llm import AnyLLM
 
 DEFAULT_JIRA_BATCH_SIZE = 10
 RELEASE_NOTE_JIRA_FIELD = 'customfield_11402'
@@ -207,9 +208,6 @@ def retrieve_issues(jira: JIRA, search_str: str, page_token, batch_size) -> dict
     issues = jira.enhanced_search_issues(jql_str=search_str, nextPageToken=page_token, maxResults=batch_size)
     return issues
 
-def get_release_note_summary(ai_client, text_to_summarize) -> str:
-    return ai_client.get_ai_response(text_to_summarize)
-
 def retrieve_description(issue) -> str:
     return issue.fields.summary
 
@@ -310,15 +308,11 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
             password_config = get_password_set(user_settings.password_file)
 
             ai_password_config = password_config['ai'][user_settings.release_set['ai_service']['name']]
-            ai_client = ai_client_factory(ai_key=ai_password_config['api_key'],
-                                          ai_service=user_settings.release_set['ai_service']['name'],
-                                          ai_model=user_settings.release_set['ai_service']['model'],
-                                          ai_prompt=user_settings.release_set['ai_service']['prompt'])
 
-            if ai_client is None:
-                raise click.UsageError('You must define a valid AI service.')
+            llm = AnyLLM.create(provider=user_settings.release_set['ai_service']['name'],
+                                api_key=ai_password_config['api_key'],)
 
-            with alive_bar(title=f"[{ai_client.ai_prompt}] ...",
+            with alive_bar(title=f"[{user_settings.release_set['ai_service']['prompt']}] ...",
                            manual=True, dual_line=True, ) as bar:
 
                 bar.text('summarizing ...')
@@ -329,9 +323,12 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
 
                         issue_summary = retrieve_description(issue)
                         issue_comments = retrieve_comments(issue)
-                        ai_summary = get_release_note_summary(ai_client=ai_client,
-                                                              text_to_summarize=issue_summary + issue_comments)
-                        issue.fields.ai_summary = ai_summary
+
+                        response = llm.completion(model=user_settings.release_set['ai_service']['model'],
+                                                  messages=[{"role": "user", "content": user_settings.release_set['ai_service']['prompt'] + ':'
+                                                                         + issue_summary + issue_comments}])
+
+                        issue.fields.ai_summary = response.choices[0].message.content
                         issue.fields.ai_service = user_settings.release_set['ai_service']
                         bar((index + 1) / len(issue_list))
                         bar.text(f'{index + 1} ⟹ {issue.key} summarized ...')

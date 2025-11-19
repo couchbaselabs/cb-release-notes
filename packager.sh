@@ -3,7 +3,6 @@
 set -e
 
 pyinstaller cb_release_note.py --onefile --clean --name cb-release-note \
---add-data "AI_Clients.py:." \
 --collect-all pyfiglet \
 --collect-all alive_progress \
 --collect-all grapheme \
