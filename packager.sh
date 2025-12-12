@@ -10,6 +10,7 @@ pyinstaller cb_release_note.py --onefile --clean --name cb-release-note \
 --collect-all openai \
 --collect-all numpy \
 --collect-all google \
+--collect-all click \
 --collect-all sqlite
 
 rm -rf ./package
