@@ -89,7 +89,7 @@ $defs:
       name:
         type: string
         enum:
-          - chatgpt
+          - openai
           - gemini
           - copilot
       model:

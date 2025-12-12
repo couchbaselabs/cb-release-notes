@@ -1,7 +1,7 @@
 from AI_Clients import OpenAIClient, GeminiClient, AIClient
 
 ai_factory = {
-    'chatgpt': OpenAIClient,
+    'openai': OpenAIClient,
     'gemini': GeminiClient
 }
 
