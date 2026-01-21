@@ -323,10 +323,13 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
 
                         issue_summary = retrieve_description(issue)
                         issue_comments = retrieve_comments(issue)
+                        issue_prompt = f"{user_settings.release_set['ai_service']['prompt']}:{issue_summary} {issue_comments}"
 
                         response = llm.completion(model=user_settings.release_set['ai_service']['model'],
-                                                  messages=[{"role": "user", "content": user_settings.release_set['ai_service']['prompt'] + ':'
-                                                                         + issue_summary + issue_comments}])
+                                                  messages=[
+                                                      {"role": "user",
+                                                       "content": issue_prompt}
+                                                  ])
 
                         issue.fields.ai_summary = response.choices[0].message.content
                         issue.fields.ai_service = user_settings.release_set['ai_service']
