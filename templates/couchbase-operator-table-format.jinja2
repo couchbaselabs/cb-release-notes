@@ -25,8 +25,7 @@ This maintenance release contains fixes to issues.
     | convert_to_asciidoc_urls(user_settings.disable_urls)
     | replace('{{', '`')
     | replace('}}','`')
-    | replace(". ", ".\n")
-    | replace("\n\n", "\n") or '{empty}' }}
+    | replace(". ", ".\n") or '{empty}' }}
 {% else %}
     {{- "a| *Summary:*" ~ (issue.fields.ai_summary | replace(", ", ",\n")
     | replace(". ", ".\n"))  or '{empty}'}}

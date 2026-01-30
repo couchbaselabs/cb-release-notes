@@ -19,7 +19,6 @@ This maintenance release contains fixes to issues.
             | convert_to_asciidoc_urls
             | replace('{{', '`')
             | replace('}}','`')
-            | replace("\n\n", "\n")
             | replace(". ", ".\n") ~ "\n" }}
         {% else %}
            {{- issue.fields.ai_summary | replace(", ", ", \n") | replace(". ", ".\n") ~ "\n" }}
