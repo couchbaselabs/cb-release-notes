@@ -4,14 +4,14 @@ click~=8.3.1
 Jinja2~=3.1.6
 pyfiglet~=1.0.2
 PyYAML~=6.0.2
-jsonschema~=4.25.1
+jsonschema~=4.26.0
 inquirerpy~=0.3.4
-termcolor~=3.2.0
+termcolor~=3.3.0
 alive-progress~=3.3.0
-openai~=2.11.0
-pyinstaller~=6.17.0
-google-genai~=1.55.0
-numpy~=2.3.5
+openai~=2.16.0
+pyinstaller~=6.18.0
+google-genai~=1.60.0
+numpy~=2.4.1
 pytest~=9.0.2
 
 
