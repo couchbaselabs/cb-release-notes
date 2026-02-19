@@ -20,6 +20,7 @@
         {% else %}
             {{- issue.raw['fields'][user_settings.release_set.release_note_field]
             | convert_to_asciidoc_urls
+            | replace(", ", ",\n")
             | replace("{{", "`")
             | replace("}}", "`") }}
         {% endif %}

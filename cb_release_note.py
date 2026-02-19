@@ -76,8 +76,8 @@ def validate_unique_names(config):
 
     return True
 
-def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
 
+def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
     validate_unique_names(config)
 
     user_settings.templates_directory = config['templates_directory']
@@ -122,7 +122,6 @@ def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
                 user_settings.fields[field['name']] = text
                 release_note_save_settings.save_item(conn, release_set, field['name'], text)
 
-
             if field['type'] == 'multiline':
                 text = inquirer.text(
                     message=field['message'],
@@ -140,8 +139,8 @@ def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
                 choices = inquirer.checkbox(
                     message=field['message'],
                     choices=list(map(lambda x: Choice(x, enabled=True)
-                        if x in release_note_save_settings.get_saved_items(conn, release_set, field['name']).split(',')
-                            else Choice(x, enabled=False) , field['choices'])),
+                    if x in release_note_save_settings.get_saved_items(conn, release_set, field['name']).split(',')
+                    else Choice(x, enabled=False), field['choices'])),
                     qmark='',
                     amark=''
                 ).execute()
@@ -176,6 +175,7 @@ def get_user_options(user_settings: UserSettings, config: dict) -> UserSettings:
     release_note_save_settings.close_database(conn)
     return user_settings
 
+
 def get_password_set(password_file: str) -> dict:
     password_stream = open(password_file, "r")
     password_config = yaml.load(password_stream, Loader=yaml.FullLoader)
@@ -208,15 +208,18 @@ def retrieve_issues(jira: JIRA, search_str: str, page_token, batch_size) -> dict
     issues = jira.enhanced_search_issues(jql_str=search_str, nextPageToken=page_token, maxResults=batch_size)
     return issues
 
+
 def retrieve_description(issue) -> str:
     return issue.fields.summary
+
 
 def retrieve_comments(issue) -> str:
     return " ".join(comment.body for comment in issue.fields.comment.comments)
 
 
 def render_release_notes(user_settings, issue_list):
-    environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True, lstrip_blocks=True)
+    environment = jinja2.Environment(loader=FileSystemLoader(user_settings.templates_directory), trim_blocks=True,
+                                     lstrip_blocks=True)
 
     support_filters = {name: function for name, function in getmembers(release_note_filters) if isfunction(function)}
     environment.filters.update(support_filters)
@@ -243,7 +246,7 @@ def render_release_notes(user_settings, issue_list):
               help='Add an OpenAI generated summary to notes without a release note description',
               is_flag=True, default=False)
 @click.option('--delete', help="Delete entries that don't have a release note description",
-              is_flag=True, default=False )
+              is_flag=True, default=False)
 @click.option('--disable-urls', help='Convert JIRA URLs to Asciidoctor URLs', is_flag=True, default=False)
 @click.option('--version', is_flag=True)
 @click.pass_context
@@ -296,12 +299,10 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
                     break
 
         if delete:
-
             with alive_bar(title="Deleting entries without release notes description ...",
                            manual=True, dual_line=True, ):
-
                 issue_list = [issue for issue in issue_list
-                              if getattr(issue.fields, user_settings.release_set['release_note_field'],None)]
+                              if getattr(issue.fields, user_settings.release_set['release_note_field'], None)]
 
         if summarize:
 
@@ -310,7 +311,7 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
             ai_password_config = password_config['ai'][user_settings.release_set['ai_service']['name']]
 
             llm = AnyLLM.create(provider=user_settings.release_set['ai_service']['name'],
-                                api_key=ai_password_config['api_key'],)
+                                api_key=ai_password_config['api_key'], )
 
             with alive_bar(title=f"[{user_settings.release_set['ai_service']['prompt']}] ...",
                            manual=True, dual_line=True, ) as bar:
@@ -320,7 +321,6 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
                 for index, issue in enumerate(issue_list):
 
                     if not getattr(issue.fields, user_settings.release_set['release_note_field'], None):
-
                         issue_summary = retrieve_description(issue)
                         issue_comments = retrieve_comments(issue)
                         issue_prompt = f"{user_settings.release_set['ai_service']['prompt']}:{issue_summary} {issue_comments}"
@@ -347,6 +347,7 @@ def main(ctx, config, output, summarize, delete, disable_urls, version):
 
     except ValidationError as vE:
         click.echo(f'Error in configuration file ⟹ {vE.message}')
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
