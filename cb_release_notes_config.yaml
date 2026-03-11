@@ -2,7 +2,7 @@
 
 # $schema: ./cb_release_config_schema.yaml
 
-version: "2.3.2"
+version: "3.0.0"
 
 password_file: ./.passwords.yaml
 templates_directory: ./templates
@@ -143,8 +143,8 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-server-bug-fixes.jinja2
     ai_service:
-      name: openai
-      model: 'gpt-4o'
+      name: gemini
+      model: 'gemini-2.5-flash'
       prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Fixes and enhancements (Server 7.0+)"
