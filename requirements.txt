@@ -8,11 +8,12 @@ jsonschema~=4.26.0
 inquirerpy~=0.3.4
 termcolor~=3.3.0
 alive-progress~=3.3.0
-openai~=2.16.0
-pyinstaller~=6.18.0
-google-genai~=1.60.0
+openai~=2.26.0
+pyinstaller~=6.19.0
+google-genai~=1.66.0
 numpy~=2.4.1
 pytest~=9.0.2
+
 
 
 

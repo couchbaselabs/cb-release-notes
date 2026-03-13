@@ -1,11 +1,20 @@
 # Support filters for the Jinja conversion.
 import re
 
+# We need to maintain a running list of issues that have been rendered on the page so far,
+# because some tickets have more than one component label. Even so, the item should only
+# appear once on the page. After each item in the component set is found, add it to the
+# list so that it won't be rendered again.
+
+issues_processed_so_far = []
 
 def filter_by_component(issues, selected_components):
-    return [issue for issue in issues if
-            [component for component in issue.fields.components if component.name in selected_components]]
+    issue_list = [issue for issue in issues if
+            [component for component in issue.fields.components
+             if component.name in selected_components and issue not in issues_processed_so_far]]
 
+    issues_processed_so_far.extend(issue_list)
+    return issue_list
 
 def filter_out_by_component(issues, selected_components):
     return [issue for issue in issues if
