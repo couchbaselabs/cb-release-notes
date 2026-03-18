@@ -1,24 +1,37 @@
 # Support filters for the Jinja conversion.
 import re
 
+from jinja2 import pass_context
+
 # We need to maintain a running list of issues that have been rendered on the page so far,
 # because some tickets have more than one component label. Even so, the item should only
 # appear once on the page. After each item in the component set is found, add it to the
 # list so that it won't be rendered again.
 
-issues_processed_so_far = []
 
-def filter_by_component(issues, selected_components):
+@pass_context
+def filter_by_component(ctx, issues, selected_components):
+
+    if not hasattr(ctx, 'issues_processed_so_far'):
+        ctx.issues_processed_so_far = []
+
     issue_list = [issue for issue in issues if
             [component for component in issue.fields.components
-             if component.name in selected_components and issue not in issues_processed_so_far]]
+             if component.name in selected_components and issue not in ctx.issues_processed_so_far]]
 
-    issues_processed_so_far.extend(issue_list)
+    ctx.issues_processed_so_far.extend(issue_list)
+
     return issue_list
 
-def filter_out_by_component(issues, selected_components):
+@pass_context
+def filter_out_by_component(ctx, issues, selected_components):
+
+    if not hasattr(ctx, 'issues_processed_so_far'):
+        ctx.issues_processed_so_far = []
+
     return [issue for issue in issues if
-            [component for component in issue.fields.components if component.name not in selected_components]]
+            [component for component in issue.fields.components
+             if component.name not in selected_components and issue not in ctx.issues_processed_so_far]]
 
 
 def filter_by_status(issues, selected_statuses):
