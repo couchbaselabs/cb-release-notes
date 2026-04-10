@@ -22,7 +22,8 @@
             | convert_to_asciidoc_urls(user_settings.disable_urls)
             | replace(", ", ",\n")
             | replace("{{", "`")  | replace("}}", "`")
-            | replace(". ", ".\n") }}
+            | replace(". ", ".\n")
+            | replace("‘","'") | replace("’","'") | replace("“","\"") | replace("”","\"") }}
         {% endif %}
 
    {% endfor %}

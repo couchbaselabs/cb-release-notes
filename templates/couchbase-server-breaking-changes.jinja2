@@ -23,6 +23,7 @@
         | replace(", ", ",\n")
         | replace("{{", "`")  | replace("}}", "`")
         | replace(". ", ".\n")
+        | replace("‘","'") | replace("’","'") | replace("“","\"") | replace("”","\"")
         }}
     {% endif %}
 {% endfor %}
