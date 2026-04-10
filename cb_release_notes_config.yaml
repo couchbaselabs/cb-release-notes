@@ -104,11 +104,9 @@ release_settings:
         message: 'Enter the file path for the release notes:'
     url: https://jira.issues.couchbase.com
     jql: project = "Couchbase Server" 
-      AND status = Open 
       AND affectedVersion IN ({{release_number}}) 
       AND labels IN (releasenote,releasenotecomplete)
-      AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY)
-      AND summary !~ "System Test" AND description !~ "System Test"  
+      AND ("Release Notes[Labels]" NOT IN (suppress-{{release_number}}) OR "Release Notes[Labels]" IS EMPTY) 
       ORDER BY key ASC
     release_note_field: 'customfield_11402'
     template: couchbase-server-known-issues.jinja2
