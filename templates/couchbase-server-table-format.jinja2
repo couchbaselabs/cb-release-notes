@@ -38,7 +38,8 @@
                 | replace(", ", ",\n")
                 | replace("{{", "`")  | replace("}}", "`")
                 | replace(". ", ".\n")
-                | replace("‘","'") | replace("’","'") | replace("“","\"") | replace("”","\"")  }}
+                | replace("‘","'") | replace("’","'") | replace("“","\"") | replace("”","\"")
+                | ventilate_text(True)        }}
 
            {% endif %}
 

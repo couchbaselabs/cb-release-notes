@@ -3,6 +3,7 @@ import re
 
 from jinja2 import pass_context
 
+
 # We need to maintain a running list of issues that have been rendered on the page so far,
 # because some tickets have more than one component label. Even so, the item should only
 # appear once on the page. After each item in the component set is found, add it to the
@@ -11,21 +12,20 @@ from jinja2 import pass_context
 
 @pass_context
 def filter_by_component(ctx, issues, selected_components):
-
     if not hasattr(ctx, 'issues_processed_so_far'):
         ctx.issues_processed_so_far = []
 
     issue_list = [issue for issue in issues if
-            [component for component in issue.fields.components
-             if component.name in selected_components and issue not in ctx.issues_processed_so_far]]
+                  [component for component in issue.fields.components
+                   if component.name in selected_components and issue not in ctx.issues_processed_so_far]]
 
     ctx.issues_processed_so_far.extend(issue_list)
 
     return issue_list
 
+
 @pass_context
 def filter_out_by_component(ctx, issues, selected_components):
-
     if not hasattr(ctx, 'issues_processed_so_far'):
         ctx.issues_processed_so_far = []
 
@@ -67,3 +67,12 @@ def convert_to_asciidoc_urls(string_to_fix, disable=False):
         pattern = r'\[(https?:\/\/.*[\r\n]*)\|(.*[\r\n]*)\]\[(.*)\]'
         replacement = r'\1[\3]'
         return re.sub(pattern, replacement, string_to_fix, flags=re.MULTILINE + re.IGNORECASE)
+
+
+def ventilate_text(string_to_ventilate, ventilate = False):
+    if ventilate:
+        pattern = r'([a-zA-Z]+[,\.])\s'
+        replacement = r'\1\n'
+        return re.sub(pattern, replacement, string_to_ventilate)
+    else:
+        return string_to_ventilate

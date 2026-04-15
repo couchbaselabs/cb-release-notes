@@ -27,7 +27,8 @@ This maintenance release contains fixes to issues.
     | replace('{{', '`')
     | replace('}}','`')
     | replace(". ", ".\n")
-    | replace("‘","'") | replace("’","'") | replace("“","\"") | replace("”","\"") or '{empty}' }}
+    | replace("‘","'") | replace("’","'") | replace("“","\"") | replace("”","\"") or '{empty}'
+    | ventilate_text(True)        }}
 {% else %}
     {{- "a| *Summary:*" ~ (issue.fields.ai_summary | replace(", ", ",\n")
     | replace(". ", ".\n"))  or '{empty}'}}
