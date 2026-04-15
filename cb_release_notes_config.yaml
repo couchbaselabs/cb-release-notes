@@ -28,9 +28,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: sync-gateway.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "What's New (Server)"
     fields:
@@ -58,9 +61,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-server-whats-new.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Breaking changes (Server)"
     fields:
@@ -84,9 +90,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-server-breaking-changes.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Known issues (Server)"
     fields:
@@ -111,9 +120,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-server-known-issues.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Fixes and enhancements (Server 8.0+)"
     fields:
@@ -141,9 +153,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-server-bug-fixes.jinja2
     ai_service:
-      name: gemini
-      model: 'gemini-2.5-flash'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      name: 'gemini'
+      model: 'gemini-2.5-flash-lite'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose, 
+        with no version numbers, no headings, no links, 
+        no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Fixes and enhancements (Server 7.0+)"
     fields:
@@ -169,11 +184,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-server-table-format.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, 
-      no headings, no links, no identifying names or email addresses, 
-      and no more than 8 sentences'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Couchbase Mobile"
     fields:
@@ -205,10 +221,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-mobile.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
-
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Couchbase Operator (table format)"
     fields:
@@ -229,9 +247,12 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-operator-table-format.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
 
   - name: "Couchbase Operator"
     fields:
@@ -252,7 +273,10 @@ release_settings:
     release_note_field: 'customfield_11402'
     template: couchbase-operator.jinja2
     ai_service:
-      name: openai
+      name: 'openai'
       model: 'gpt-4o'
-      prompt: 'Summarise the following as a short release note with no version numbers, no headings, no links, no identifying names or email addresses, and no more than 8 sentences'
-
+      prompt: >
+       'Summarise the following as a short release note using ventilated prose 
+        with no version numbers, no headings, 
+        no links, no identifying names or email addresses, and no more than 8 sentences'
+        
